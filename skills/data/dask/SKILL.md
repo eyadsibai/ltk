@@ -4,8 +4,6 @@ description: Use when "Dask", "parallel computing", "distributed computing", "la
 version: 1.0.0
 ---
 
-<!-- Adapted from: claude-scientific-skills/scientific-skills/dask -->
-
 # Dask Parallel and Distributed Computing
 
 Scale pandas/NumPy workflows beyond memory and across clusters.
@@ -18,214 +16,158 @@ Scale pandas/NumPy workflows beyond memory and across clusters.
 - Building custom parallel workflows
 - Distributing workloads across multiple cores/machines
 
-## Quick Start
+---
 
-```python
-import dask.dataframe as dd
-import dask.array as da
+## Dask Collections
 
-# Parallel DataFrame (like pandas)
-ddf = dd.read_csv('data/*.csv')
-result = ddf.groupby('category').mean().compute()
+| Collection | Like | Use Case |
+|------------|------|----------|
+| **DataFrame** | pandas | Tabular data, CSV/Parquet |
+| **Array** | NumPy | Numerical arrays, matrices |
+| **Bag** | list | Unstructured data, JSON logs |
+| **Delayed** | Custom | Arbitrary Python functions |
 
-# Parallel Array (like numpy)
-x = da.random.random((10000, 10000), chunks=(1000, 1000))
-result = x.mean().compute()
-```
+**Key concept**: All collections are lazy—computation happens only when you call `.compute()`.
 
-## Dask DataFrame
+---
 
-```python
-import dask.dataframe as dd
+## Lazy Evaluation
 
-# Read multiple files
-ddf = dd.read_csv('data/2024-*.csv')
-ddf = dd.read_parquet('data/*.parquet')
+| Function | Behavior | Use |
+|----------|----------|-----|
+| `dd.read_csv()` | Lazy load | Large CSVs |
+| `dd.read_parquet()` | Lazy load | Large Parquet |
+| Operations | Build graph | Chain transforms |
+| `.compute()` | Execute | Get final result |
 
-# Operations are lazy until compute()
-filtered = ddf[ddf['value'] > 100]
-grouped = filtered.groupby('category').agg({'amount': ['sum', 'mean']})
-result = grouped.compute()  # Triggers execution
+**Key concept**: Dask builds a task graph of operations, optimizes it, then executes in parallel. Call `.compute()` once at the end, not after every operation.
 
-# Custom operations on partitions
-def process_partition(df):
-    df['new_col'] = df['a'] + df['b']
-    return df
-
-ddf = ddf.map_partitions(process_partition)
-```
-
-## Dask Array
-
-```python
-import dask.array as da
-import numpy as np
-
-# Create from scratch
-x = da.random.random((100000, 100000), chunks=(10000, 10000))
-
-# From NumPy array
-arr = np.random.random((10000, 10000))
-x = da.from_array(arr, chunks=(1000, 1000))
-
-# From files
-x = da.from_zarr('large_dataset.zarr')
-
-# Operations
-y = x + 100
-z = y.mean(axis=0)
-result = z.compute()
-
-# Custom operations
-def custom_func(block):
-    return block ** 2
-
-result = da.map_blocks(custom_func, x)
-```
-
-## Dask Bag (Unstructured Data)
-
-```python
-import dask.bag as db
-import json
-
-# Read and parse JSON/text files
-bag = db.read_text('logs/*.json').map(json.loads)
-
-# Functional operations
-valid = bag.filter(lambda x: x['status'] == 'valid')
-processed = valid.map(lambda x: {'id': x['id'], 'value': x['value']})
-
-# Convert to DataFrame for analysis
-ddf = processed.to_dataframe()
-result = ddf.groupby('category').mean().compute()
-```
+---
 
 ## Schedulers
 
-```python
-import dask
+| Scheduler | Best For | Start |
+|-----------|----------|-------|
+| **threaded** | NumPy/Pandas (releases GIL) | Default |
+| **processes** | Pure Python (GIL bound) | `scheduler='processes'` |
+| **synchronous** | Debugging | `scheduler='synchronous'` |
+| **distributed** | Monitoring, scaling, clusters | `Client()` |
 
-# Threads (default) - good for NumPy/Pandas
-result = computation.compute()  # Uses threads
+### Distributed Scheduler
 
-# Processes - good for Python-heavy work
-result = computation.compute(scheduler='processes')
+| Feature | Benefit |
+|---------|---------|
+| Dashboard | Real-time progress monitoring |
+| Cluster scaling | Add/remove workers |
+| Fault tolerance | Retry failed tasks |
+| Worker resources | Memory management |
 
-# Synchronous - for debugging
-dask.config.set(scheduler='synchronous')
-result = computation.compute()  # Can use pdb
+---
 
-# Distributed - for monitoring and scaling
-from dask.distributed import Client
-client = Client()  # Local cluster
-print(client.dashboard_link)  # Monitor at this URL
-result = computation.compute()
-```
+## Chunking Concepts
 
-## Distributed Computing
+### DataFrame Partitions
 
-```python
-from dask.distributed import Client
+| Concept | Description |
+|---------|-------------|
+| **Partition** | Subset of rows (like a mini DataFrame) |
+| **npartitions** | Number of partitions |
+| **divisions** | Index boundaries between partitions |
 
-# Local cluster
-client = Client()
+### Array Chunks
 
-# Remote cluster
-client = Client('scheduler-address:8786')
+| Concept | Description |
+|---------|-------------|
+| **Chunk** | Subset of array (n-dimensional block) |
+| **chunks** | Tuple of chunk sizes per dimension |
+| **Optimal size** | ~100 MB per chunk |
 
-# Submit tasks
-futures = client.map(process_func, data_list)
-results = client.gather(futures)
+**Key concept**: Chunk size is critical. Too small = scheduling overhead. Too large = memory issues. Target ~100 MB.
 
-# Scatter large data (send once)
-big_data = client.scatter(large_dataset)
-futures = client.map(process, [big_data] * 10, params)
+---
 
-client.close()
-```
+## DataFrame Operations
 
-## Best Practices
+### Supported (parallel)
 
-### Don't Load Data Locally First
+| Category | Operations |
+|----------|------------|
+| **Selection** | `filter`, `loc`, column selection |
+| **Aggregation** | `groupby`, `sum`, `mean`, `count` |
+| **Transforms** | `apply` (row-wise), `map_partitions` |
+| **Joins** | `merge`, `join` (shuffles data) |
+| **I/O** | `read_csv`, `read_parquet`, `to_parquet` |
 
-```python
-# Wrong - loads all data in memory
-import pandas as pd
-df = pd.read_csv('large.csv')
-ddf = dd.from_pandas(df, npartitions=10)
+### Avoid or Use Carefully
 
-# Correct - let Dask handle loading
-import dask.dataframe as dd
-ddf = dd.read_csv('large.csv')
-```
+| Operation | Issue | Alternative |
+|-----------|-------|-------------|
+| `iterrows` | Kills parallelism | `map_partitions` |
+| `apply(axis=1)` | Slow | `map_partitions` |
+| Repeated `compute()` | Inefficient | Single `compute()` at end |
+| `sort_values` | Expensive shuffle | Avoid if possible |
 
-### Avoid Repeated compute()
-
-```python
-# Wrong - separate computations
-for item in items:
-    result = dask_computation(item).compute()
-
-# Correct - single compute for all
-computations = [dask_computation(item) for item in items]
-results = dask.compute(*computations)
-```
-
-### Choose Appropriate Chunk Sizes
-
-- Target ~100 MB per chunk
-- Too large: Memory overflow
-- Too small: Scheduling overhead
-
-```python
-# Check task graph size
-print(len(ddf.__dask_graph__()))  # Should be < 100k tasks
-```
+---
 
 ## Common Patterns
 
 ### ETL Pipeline
 
-```python
-ddf = dd.read_csv('raw_data/*.csv')
-ddf = ddf[ddf['status'] == 'valid']
-ddf['amount'] = ddf['amount'].astype('float64')
-ddf = ddf.dropna(subset=['important_col'])
-summary = ddf.groupby('category').agg({'amount': ['sum', 'mean']})
-summary.to_parquet('output/summary.parquet')
-```
+1. `scan_*` or `read_*` (lazy load)
+2. Chain filters and transforms
+3. Single `.compute()` or `.to_parquet()`
 
-### Large-Scale Array Computation
+### Multi-File Processing
 
-```python
-import dask.array as da
+| Pattern | Description |
+|---------|-------------|
+| Glob patterns | `dd.read_csv('data/*.csv')` |
+| Partition per file | Natural parallelism |
+| Output partitioned | `to_parquet('output/')` |
 
-x = da.from_zarr('large_dataset.zarr')
-normalized = (x - x.mean()) / x.std()
-da.to_zarr(normalized, 'normalized.zarr')
-```
+### Custom Operations
 
-## Debugging
+| Method | Use Case |
+|--------|----------|
+| `map_partitions` | Apply function to each partition |
+| `map_blocks` | Apply function to each array block |
+| `delayed` | Wrap arbitrary Python functions |
 
-```python
-# Use synchronous scheduler
-dask.config.set(scheduler='synchronous')
-result = computation.compute()  # Now you can use pdb
+---
 
-# Test on sample first
-sample = ddf.head(1000)  # Small sample
-# Test logic, then scale
-```
+## Best Practices
+
+| Practice | Why |
+|----------|-----|
+| Don't load locally first | Let Dask handle loading |
+| Single compute() at end | Avoid redundant computation |
+| Use Parquet | Faster than CSV, columnar |
+| Match partition to files | One partition per file |
+| Check task graph size | `len(ddf.__dask_graph__())` < 100k |
+| Use distributed for debugging | Dashboard shows progress |
+
+---
+
+## Common Pitfalls
+
+| Pitfall | Solution |
+|---------|----------|
+| Loading with pandas first | Use `dd.read_*` directly |
+| compute() in loops | Collect all, single compute() |
+| Too many partitions | Repartition to ~100 MB each |
+| Memory errors | Reduce chunk size, add workers |
+| Slow shuffles | Avoid sorts/joins when possible |
+
+---
 
 ## vs Alternatives
 
-| Tool | Best For |
-|------|----------|
-| **Dask** | Scale pandas/NumPy, larger-than-RAM, clusters |
-| Polars | Fast in-memory DataFrames |
-| Vaex | Out-of-core analytics on single machine |
-| Spark | Enterprise big data, SQL-heavy workflows |
+| Tool | Best For | Trade-off |
+|------|----------|-----------|
+| **Dask** | Scale pandas/NumPy, clusters | Setup complexity |
+| **Polars** | Fast in-memory | Must fit in RAM |
+| **Vaex** | Out-of-core single machine | Limited operations |
+| **Spark** | Enterprise, SQL-heavy | Infrastructure |
 
 ## Resources
 

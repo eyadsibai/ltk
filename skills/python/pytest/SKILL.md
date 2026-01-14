@@ -1,6 +1,6 @@
 ---
 name: Pytest
-description: This skill should be used when the user asks about "pytest", "writing tests", "test fixtures", "parametrize", "mocking", "test coverage", "conftest", or mentions Python testing.
+description: This skill should be used when the user asks about "pytest", "writing tests", "test fixtures", "parametrize", "mocking", "test coverage", "conftest"
 version: 1.0.0
 ---
 
@@ -8,248 +8,117 @@ version: 1.0.0
 
 Guidance for writing effective tests with pytest.
 
-## Basic Tests
+## Core Concepts
 
-```python
-def test_addition():
-    assert 1 + 1 == 2
+### Fixtures
 
-def test_exception():
-    with pytest.raises(ValueError, match="invalid"):
-        raise ValueError("invalid input")
+Reusable test setup/teardown. Use `yield` for cleanup.
 
-def test_approximate():
-    assert 0.1 + 0.2 == pytest.approx(0.3)
-```
+**Scopes:**
 
-## Fixtures
+| Scope | Runs | Use Case |
+|-------|------|----------|
+| `function` | Each test | Default, isolated |
+| `class` | Once per class | Shared state in class |
+| `module` | Once per file | Expensive setup |
+| `session` | Once total | DB connections, servers |
 
-```python
-import pytest
+**Key concept**: `conftest.py` makes fixtures available to all tests in directory.
 
-@pytest.fixture
-def user():
-    return User(name="Test", email="test@example.com")
+---
 
-@pytest.fixture
-def db():
-    """Database with automatic cleanup."""
-    database = Database()
-    yield database
-    database.cleanup()
+### Parametrize
 
-def test_user_save(user, db):
-    db.save(user)
-    assert db.get(user.id) == user
-```
+Test multiple inputs without repeating code.
 
-### Fixture Scopes
+**Key concept**: Generates separate test for each parameter set - failures are isolated.
 
-```python
-@pytest.fixture(scope="function")  # Default, runs per test
-def per_test():
-    ...
+**Use `pytest.param()` for:**
 
-@pytest.fixture(scope="class")  # Once per test class
-def per_class():
-    ...
+- Custom test IDs
+- Expected failures (`marks=pytest.mark.xfail`)
+- Conditional skips
 
-@pytest.fixture(scope="module")  # Once per module
-def per_module():
-    ...
+---
 
-@pytest.fixture(scope="session")  # Once per test session
-def per_session():
-    ...
-```
+### Markers
 
-### conftest.py
+Tag tests for filtering and special behavior.
 
-```python
-# tests/conftest.py - fixtures available to all tests
-import pytest
+| Built-in | Purpose |
+|----------|---------|
+| `@pytest.mark.skip` | Always skip |
+| `@pytest.mark.skipif(condition)` | Conditional skip |
+| `@pytest.mark.xfail` | Expected failure |
+| `@pytest.mark.asyncio` | Async test (with pytest-asyncio) |
 
-@pytest.fixture
-def app():
-    return create_app(testing=True)
+**Custom markers**: Define in `pyproject.toml`, run with `pytest -m "marker"`
 
-@pytest.fixture
-def client(app):
-    return app.test_client()
+---
 
-@pytest.fixture(autouse=True)
-def reset_database(db):
-    """Automatically reset DB before each test."""
-    db.reset()
-```
+### Mocking
 
-## Parametrize
+| Tool | Use Case |
+|------|----------|
+| `Mock()` | Create fake object |
+| `patch()` | Replace import |
+| `MagicMock()` | Mock with magic methods |
+| `AsyncMock()` | Mock async functions |
 
-```python
-@pytest.mark.parametrize("input,expected", [
-    ("hello", 5),
-    ("world", 5),
-    ("", 0),
-])
-def test_length(input, expected):
-    assert len(input) == expected
+**Key concept**: Patch where the thing is *used*, not where it's *defined*.
 
-# Multiple parameters
-@pytest.mark.parametrize("x", [1, 2])
-@pytest.mark.parametrize("y", [10, 20])
-def test_multiply(x, y):
-    assert x * y in [10, 20, 40]
-
-# With IDs
-@pytest.mark.parametrize("input,expected", [
-    pytest.param("hello", 5, id="normal"),
-    pytest.param("", 0, id="empty"),
-    pytest.param(None, None, id="none", marks=pytest.mark.xfail),
-])
-def test_with_ids(input, expected):
-    ...
-```
-
-## Mocking
-
-```python
-from unittest.mock import Mock, patch, MagicMock
-
-def test_with_mock():
-    mock_api = Mock()
-    mock_api.get_user.return_value = {"id": 1, "name": "Test"}
-
-    result = service.fetch_user(mock_api, 1)
-
-    mock_api.get_user.assert_called_once_with(1)
-    assert result["name"] == "Test"
-
-@patch("mymodule.external_api")
-def test_with_patch(mock_api):
-    mock_api.fetch.return_value = "data"
-    result = my_function()
-    assert result == "data"
-
-# Async mocking
-@pytest.mark.asyncio
-async def test_async_mock():
-    mock = MagicMock()
-    mock.fetch = AsyncMock(return_value="data")
-    result = await mock.fetch()
-    assert result == "data"
-```
-
-## Markers
-
-```python
-# Mark slow tests
-@pytest.mark.slow
-def test_slow_operation():
-    ...
-
-# Skip conditionally
-@pytest.mark.skipif(sys.platform == "win32", reason="Unix only")
-def test_unix_feature():
-    ...
-
-# Expected failures
-@pytest.mark.xfail(reason="Known bug #123")
-def test_known_bug():
-    ...
-
-# Run with: pytest -m "not slow"
-```
-
-### Custom Markers (pyproject.toml)
-
-```toml
-[tool.pytest.ini_options]
-markers = [
-    "slow: marks tests as slow",
-    "integration: integration tests",
-    "e2e: end-to-end tests",
-]
-```
-
-## Async Tests
-
-```python
-import pytest
-
-@pytest.mark.asyncio
-async def test_async_function():
-    result = await async_fetch()
-    assert result == expected
-
-# Async fixtures
-@pytest_asyncio.fixture
-async def async_db():
-    db = await Database.connect()
-    yield db
-    await db.close()
-```
-
-## Coverage
-
-```bash
-# Run with coverage
-pytest --cov=src --cov-report=html --cov-report=term-missing
-
-# Fail if coverage below threshold
-pytest --cov=src --cov-fail-under=80
-```
-
-### Coverage Config
-
-```toml
-[tool.coverage.run]
-source = ["src"]
-branch = true
-
-[tool.coverage.report]
-exclude_lines = [
-    "pragma: no cover",
-    "if TYPE_CHECKING:",
-    "raise NotImplementedError",
-]
-```
+---
 
 ## Test Organization
 
 ```
 tests/
-├── conftest.py           # Shared fixtures
-├── unit/
-│   ├── test_models.py
-│   └── test_utils.py
-├── integration/
-│   ├── conftest.py       # Integration-specific fixtures
-│   └── test_api.py
-└── e2e/
-    └── test_workflows.py
+├── conftest.py          # Shared fixtures
+├── unit/                # Fast, isolated
+├── integration/         # Multiple components
+└── e2e/                 # Full system
 ```
 
-## Useful Commands
+---
 
-```bash
-# Run all tests
-pytest
+## Coverage
 
-# Verbose output
-pytest -v
+**Key thresholds:**
 
-# Stop on first failure
-pytest -x
+- 80%+ is good coverage
+- 100% is often overkill
+- Branch coverage catches conditionals
 
-# Run specific test
-pytest tests/test_file.py::test_function
+**Config in `pyproject.toml`**: Set `source`, `branch=true`, `fail_under`
 
-# Run tests matching pattern
-pytest -k "user and not slow"
+---
 
-# Show print statements
-pytest -s
+## Common Commands
 
-# Parallel execution
-pytest -n auto
-```
+| Command | Purpose |
+|---------|---------|
+| `pytest -v` | Verbose output |
+| `pytest -x` | Stop on first failure |
+| `pytest -k "pattern"` | Filter by name |
+| `pytest -m "marker"` | Filter by marker |
+| `pytest -s` | Show print output |
+| `pytest -n auto` | Parallel (pytest-xdist) |
+| `pytest --cov=src` | With coverage |
+
+---
+
+## Best Practices
+
+| Practice | Why |
+|----------|-----|
+| One assertion per test | Clear failures |
+| Descriptive test names | Self-documenting |
+| Arrange-Act-Assert | Consistent structure |
+| Test behavior, not implementation | Refactor-proof |
+| Use factories for test data | Maintainable |
+| Keep tests fast | Run often |
+
+## Resources
+
+- Pytest docs: <https://docs.pytest.org/>
+- pytest-asyncio: <https://pytest-asyncio.readthedocs.io/>

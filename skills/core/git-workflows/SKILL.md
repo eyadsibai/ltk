@@ -8,292 +8,204 @@ version: 1.0.0
 
 Comprehensive git workflow skill for commits, pull requests, branching, and changelog generation.
 
-## Core Capabilities
+---
 
-### Smart Commit Messages
+## Commit Message Format
 
-Generate meaningful commit messages from changes:
+### Conventional Commits
 
-**Commit Message Format:**
+| Part | Purpose | Example |
+|------|---------|---------|
+| **Type** | Category of change | `feat`, `fix`, `docs` |
+| **Scope** | Affected component | `(auth)`, `(api)` |
+| **Subject** | Brief description | `add OAuth2 login` |
+| **Body** | Details (optional) | Why + what changed |
+| **Footer** | References | `Closes #123` |
 
-```
-<type>(<scope>): <subject>
+### Commit Types
 
-<body>
+| Type | When to Use |
+|------|-------------|
+| **feat** | New feature |
+| **fix** | Bug fix |
+| **docs** | Documentation only |
+| **style** | Formatting (no code change) |
+| **refactor** | Code restructuring |
+| **test** | Adding/updating tests |
+| **chore** | Maintenance, deps |
+| **perf** | Performance improvement |
 
-<footer>
-```
-
-**Types:**
-
-- `feat`: New feature
-- `fix`: Bug fix
-- `docs`: Documentation
-- `style`: Formatting (no code change)
-- `refactor`: Code restructuring
-- `test`: Adding tests
-- `chore`: Maintenance
-
-**Analysis workflow:**
+### Commit Analysis Workflow
 
 1. Run `git diff --staged` to see changes
-2. Identify the type of change
+2. Identify change type (feat, fix, etc.)
 3. Determine scope (affected component)
 4. Write concise subject (< 50 chars)
-5. Add body with details if needed
-
-**Good commit examples:**
-
-```
-feat(auth): add OAuth2 login support
-
-Implement OAuth2 authentication flow with Google and GitHub providers.
-Includes token refresh and session management.
-
-Closes #123
+5. Add body if context needed
 
 ---
 
-fix(api): handle null response from payment gateway
+## Pull Request Structure
 
-Add null check before accessing response.data to prevent
-TypeError when gateway returns empty response.
+### PR Template Elements
 
-Fixes #456
-```
+| Section | Content |
+|---------|---------|
+| **Summary** | What this PR does (1-2 sentences) |
+| **Changes** | Bullet list of specific changes |
+| **Testing** | How changes were tested |
+| **Screenshots** | If UI changes |
+| **Checklist** | Tests pass, docs updated |
 
-### Pull Request Creation
+### PR Analysis Workflow
 
-Generate comprehensive PR descriptions:
+1. List commits: `git log main..HEAD --oneline`
+2. Identify themes across commits
+3. Note any breaking changes
+4. Check test coverage
+5. Review documentation needs
 
-**PR Template:**
+---
 
-```markdown
-## Summary
+## Branch Strategies
 
-Brief description of what this PR does.
+### Git Flow
 
-## Changes
+| Branch | Purpose |
+|--------|---------|
+| **main** | Production code |
+| **develop** | Integration branch |
+| **feature/** | New features |
+| **release/** | Release preparation |
+| **hotfix/** | Production fixes |
 
-- Change 1
-- Change 2
-- Change 3
+### GitHub Flow
 
-## Testing
+| Branch | Purpose |
+|--------|---------|
+| **main** | Always deployable |
+| **feature branches** | Short-lived work |
 
-How the changes were tested.
+### Trunk-Based
 
-## Screenshots (if applicable)
+| Branch | Purpose |
+|--------|---------|
+| **main** | All development |
+| **Short branches** | < 1 day |
+| **Feature flags** | Incomplete work |
 
-## Checklist
+### Branch Naming
 
-- [ ] Tests pass
-- [ ] Documentation updated
-- [ ] No breaking changes
-```
+| Pattern | Example |
+|---------|---------|
+| Feature | `feature/ABC-123-add-user-auth` |
+| Bugfix | `bugfix/ABC-456-fix-login` |
+| Hotfix | `hotfix/critical-security-patch` |
+| Release | `release/v1.2.0` |
 
-**PR workflow:**
+---
 
-1. Analyze commits in branch
-2. Summarize overall change purpose
-3. List specific changes made
-4. Note testing performed
-5. Add relevant labels/reviewers
+## Changelog Format
 
-### Branch Management
+### Keep a Changelog Structure
 
-Organize and manage branches effectively:
+| Section | Content |
+|---------|---------|
+| **Added** | New features |
+| **Changed** | Changes in existing functionality |
+| **Deprecated** | Soon-to-be removed features |
+| **Removed** | Removed features |
+| **Fixed** | Bug fixes |
+| **Security** | Security fixes |
 
-**Branch naming:**
-
-```
-feature/ABC-123-add-user-auth
-bugfix/ABC-456-fix-login-error
-hotfix/critical-security-patch
-release/v1.2.0
-```
-
-**Branch strategies:**
-
-**Git Flow:**
-
-- main: Production code
-- develop: Integration branch
-- feature/*: New features
-- release/*: Release preparation
-- hotfix/*: Production fixes
-
-**GitHub Flow:**
-
-- main: Always deployable
-- feature branches: Short-lived
-
-**Trunk-Based:**
-
-- main: All development
-- Short feature branches (< 1 day)
-- Feature flags for WIP
-
-### Changelog Generation
-
-Create changelogs from commit history:
-
-**Changelog format:**
-
-```markdown
-# Changelog
-
-## [1.2.0] - 2024-01-15
-
-### Added
-- OAuth2 authentication (#123)
-- User profile page (#124)
-
-### Fixed
-- Payment gateway null response (#456)
-- Session timeout issue (#457)
-
-### Changed
-- Updated API rate limits
-- Improved error messages
-
-### Deprecated
-- Legacy auth endpoint (use /v2/auth)
-
-### Removed
-- Unused analytics module
-
-### Security
-- Fixed XSS vulnerability in comments
-```
-
-**Generation workflow:**
+### Changelog Generation Workflow
 
 1. Get commits since last release tag
 2. Parse commit messages for type/scope
 3. Group by category (Added, Fixed, etc.)
 4. Format with links to issues/PRs
 
-## Workflow Commands
-
-### Pre-Commit Workflow
-
-Before committing:
-
-```bash
-# Check what will be committed
-git status
-git diff --staged
-
-# Verify tests pass
-pytest
-
-# Run linting
-black --check .
-flake8 .
-```
-
-### Commit Workflow
-
-```bash
-# Stage changes
-git add -p  # Interactive staging
-
-# Create commit with message
-git commit -m "type(scope): subject"
-
-# Or open editor for longer message
-git commit
-```
-
-### PR Workflow
-
-```bash
-# Ensure branch is up to date
-git fetch origin
-git rebase origin/main
-
-# Push branch
-git push -u origin feature/branch-name
-
-# Create PR (using gh CLI)
-gh pr create --title "Title" --body "Description"
-```
-
-## Analysis Patterns
-
-### Analyzing Changes for Commit
-
-To determine appropriate commit message:
-
-1. **Identify modified files**: What areas changed?
-2. **Categorize change type**: Feature, fix, refactor?
-3. **Assess scope**: Which component affected?
-4. **Summarize impact**: What does this enable/fix?
-
-### Analyzing Branch for PR
-
-To generate PR description:
-
-1. **List commits**: `git log main..HEAD --oneline`
-2. **Identify themes**: Group related changes
-3. **Note breaking changes**: Any API changes?
-4. **Check test coverage**: New tests added?
-5. **Review documentation**: Updates needed?
+---
 
 ## Best Practices
 
-### Commit Guidelines
+### Commits
 
-- **Atomic commits**: One logical change per commit
-- **Clear messages**: Explain why, not just what
-- **Reference issues**: Link to related tickets
-- **Sign commits**: Use GPG signing for verification
+| Practice | Why |
+|----------|-----|
+| Atomic commits | One logical change per commit |
+| Clear messages | Explain why, not just what |
+| Reference issues | Link to related tickets |
+| Sign commits | GPG verification |
 
-### PR Guidelines
+### Pull Requests
 
-- **Small PRs**: Easier to review (< 400 lines ideal)
-- **Clear title**: Summarize the change
-- **Description**: Explain context and decisions
-- **Self-review**: Check diff before requesting review
-- **Respond promptly**: Address feedback quickly
+| Practice | Why |
+|----------|-----|
+| Small PRs | < 400 lines ideal for review |
+| Clear title | Summarize the change |
+| Self-review first | Check diff before requesting |
+| Respond promptly | Address feedback quickly |
 
-### Branch Guidelines
+### Branches
 
-- **Short-lived**: Merge within days, not weeks
-- **Up to date**: Rebase regularly against main
-- **Clean history**: Squash or rebase before merge
-- **Delete after merge**: Keep repo clean
+| Practice | Why |
+|----------|-----|
+| Short-lived | Merge within days |
+| Up to date | Rebase regularly |
+| Clean history | Squash before merge |
+| Delete after merge | Keep repo clean |
 
-## Git Configuration
+---
 
-**Recommended global config:**
+## Merge Strategies
 
-```bash
-git config --global user.name "Your Name"
-git config --global user.email "your@email.com"
-git config --global pull.rebase true
-git config --global fetch.prune true
-git config --global init.defaultBranch main
-```
+| Strategy | When to Use | Result |
+|----------|-------------|--------|
+| **Merge commit** | Preserve history | Merge commit node |
+| **Squash** | Clean up messy history | Single commit |
+| **Rebase** | Linear history | No merge commit |
+| **Fast-forward** | Simple, linear | No merge commit |
 
-**Commit template:**
+**Key concept**: Squash for feature branches with messy commits. Rebase for clean linear history. Merge commit when branch history matters.
 
-```bash
-# .gitmessage
-# <type>(<scope>): <subject>
-#
-# <body>
-#
-# <footer>
+---
 
-git config --global commit.template ~/.gitmessage
-```
+## Common Git Commands
 
-## Integration
+### Pre-Commit
 
-Coordinate with other skills:
+| Command | Purpose |
+|---------|---------|
+| `git status` | See staged/unstaged changes |
+| `git diff --staged` | Review what will be committed |
+| `git add -p` | Interactive staging |
 
-- **security-scanning skill**: Check for secrets before commit
-- **code-quality skill**: Ensure quality before commit
-- **documentation skill**: Update docs with changes
+### Commit
+
+| Command | Purpose |
+|---------|---------|
+| `git commit -m "msg"` | Commit with message |
+| `git commit --amend` | Fix last commit (before push) |
+
+### Branch Management
+
+| Command | Purpose |
+|---------|---------|
+| `git branch -d name` | Delete merged branch |
+| `git fetch --prune` | Remove stale remotes |
+| `git rebase main` | Update branch with main |
+
+### PR Workflow
+
+| Command | Purpose |
+|---------|---------|
+| `git push -u origin branch` | Push and set upstream |
+| `gh pr create` | Create PR via CLI |
+| `gh pr merge` | Merge PR via CLI |
+
+## Resources
+
+- Conventional Commits: <https://www.conventionalcommits.org/>
+- Keep a Changelog: <https://keepachangelog.com/>
+- Git Book: <https://git-scm.com/book>

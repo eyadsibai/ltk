@@ -8,171 +8,148 @@ version: 1.0.0
 
 Guidance for building React applications with modern patterns.
 
+---
+
+## Hooks Reference
+
+### Built-in Hooks
+
+| Hook | Purpose | When to Use |
+|------|---------|-------------|
+| **useState** | Local state | Simple values, toggles, form inputs |
+| **useReducer** | Complex state | Multiple sub-values, state machines |
+| **useEffect** | Side effects | Data fetching, subscriptions, DOM manipulation |
+| **useContext** | Consume context | Theme, auth, global state |
+| **useRef** | Mutable reference | DOM access, persist values across renders |
+| **useMemo** | Memoize value | Expensive calculations |
+| **useCallback** | Memoize function | Stable callbacks for child components |
+| **useLayoutEffect** | Sync DOM effects | Measure DOM before paint |
+| **useId** | Unique IDs | Accessibility, form labels |
+
+### Hook Rules
+
+| Rule | Why |
+|------|-----|
+| Only call at top level | Hooks rely on call order |
+| Only call from React functions | Components or custom hooks |
+| Name custom hooks with "use" | Convention for linting |
+
+---
+
 ## Component Patterns
 
-### Functional Components
+| Pattern | Use Case | Key Concept |
+|---------|----------|-------------|
+| **Presentational** | Pure UI, no logic | Props in, JSX out |
+| **Container** | Data fetching, state | Wraps presentational |
+| **Compound Components** | Related components sharing state | Parent provides context |
+| **Render Props** | Share behavior | Function as child |
+| **Custom Hooks** | Reusable stateful logic | Extract from components |
+| **HOC** | Legacy pattern | Prefer hooks instead |
 
-```tsx
-// Simple component
-function Greeting({ name }: { name: string }) {
-  return <h1>Hello, {name}!</h1>;
-}
+---
 
-// With children
-interface CardProps {
-  title: string;
-  children: React.ReactNode;
-}
+## State Management Decision
 
-function Card({ title, children }: CardProps) {
-  return (
-    <div className="card">
-      <h2>{title}</h2>
-      {children}
-    </div>
-  );
-}
-```
+| Solution | Best For | Trade-offs |
+|----------|----------|------------|
+| **useState** | Component-local | Simplest, prop drilling for sharing |
+| **useReducer** | Complex local state | More boilerplate, predictable |
+| **Context** | Theme, auth, i18n | Re-renders all consumers |
+| **Zustand** | Simple global | Minimal API, good devtools |
+| **Redux Toolkit** | Complex global | Powerful, more boilerplate |
+| **React Query/TanStack** | Server state | Caching, background refresh |
+| **Jotai/Recoil** | Atomic state | Fine-grained updates |
 
-### Hooks
+**Key concept**: Server state (API data) and client state (UI state) should be managed differently. Use React Query for server state.
 
-```tsx
-// useState
-const [count, setCount] = useState(0);
-const [user, setUser] = useState<User | null>(null);
+---
 
-// useEffect
-useEffect(() => {
-  fetchData();
-}, [dependency]);
+## useEffect Patterns
 
-// useEffect cleanup
-useEffect(() => {
-  const subscription = subscribe();
-  return () => subscription.unsubscribe();
-}, []);
+| Pattern | Dependency Array | Purpose |
+|---------|------------------|---------|
+| Run once | `[]` | Initial fetch, setup |
+| Run on change | `[dep1, dep2]` | React to specific changes |
+| Run every render | (omit) | Rarely needed |
+| Cleanup | Return function | Subscriptions, timers |
 
-// useMemo - expensive calculations
-const sortedItems = useMemo(
-  () => items.sort((a, b) => a.name.localeCompare(b.name)),
-  [items]
-);
+### Common Pitfalls
 
-// useCallback - stable function references
-const handleClick = useCallback(() => {
-  doSomething(id);
-}, [id]);
-```
+| Pitfall | Solution |
+|---------|----------|
+| Infinite loops | Include all dependencies, use useCallback |
+| Stale closures | Use refs or functional updates |
+| Race conditions | Cleanup flag or AbortController |
+| Missing deps | Trust the linter, refactor if needed |
 
-### Custom Hooks
+---
 
-```tsx
-function useLocalStorage<T>(key: string, initialValue: T) {
-  const [value, setValue] = useState<T>(() => {
-    const stored = localStorage.getItem(key);
-    return stored ? JSON.parse(stored) : initialValue;
-  });
+## Performance Optimization
 
-  useEffect(() => {
-    localStorage.setItem(key, JSON.stringify(value));
-  }, [key, value]);
+| Technique | When to Use | Cost |
+|-----------|-------------|------|
+| **React.memo** | Expensive child, frequent parent renders | Shallow comparison |
+| **useMemo** | Expensive calculation | Memory for cached value |
+| **useCallback** | Callback passed to memoized child | Memory for function |
+| **Lazy loading** | Large components, routes | Initial load vs waterfall |
+| **Virtualization** | Long lists (100+ items) | Complexity |
 
-  return [value, setValue] as const;
-}
+**Key concept**: Don't optimize prematurely. Measure first with React DevTools Profiler.
 
-// Usage
-const [theme, setTheme] = useLocalStorage('theme', 'light');
-```
+---
 
-## State Management
+## Conditional Rendering
 
-### Context
+| Pattern | Use Case |
+|---------|----------|
+| **&&** | Show/hide single element |
+| **Ternary** | Two alternatives |
+| **Early return** | Multiple conditions, cleaner |
+| **Switch/object map** | Many alternatives |
 
-```tsx
-interface AuthContextType {
-  user: User | null;
-  login: (credentials: Credentials) => Promise<void>;
-  logout: () => void;
-}
+---
 
-const AuthContext = createContext<AuthContextType | null>(null);
+## Form Handling
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
+| Approach | Use Case |
+|----------|----------|
+| **Controlled** | Need validation, formatting |
+| **Uncontrolled (refs)** | Simple forms, performance |
+| **React Hook Form** | Complex forms, validation |
+| **Formik** | Legacy, full-featured |
 
-  const login = async (credentials: Credentials) => {
-    const user = await api.login(credentials);
-    setUser(user);
-  };
+**Key concept**: Controlled components store value in React state. Uncontrolled use DOM as source of truth.
 
-  const logout = () => setUser(null);
-
-  return (
-    <AuthContext.Provider value={{ user, login, logout }}>
-      {children}
-    </AuthContext.Provider>
-  );
-}
-
-export function useAuth() {
-  const context = useContext(AuthContext);
-  if (!context) throw new Error('useAuth must be used within AuthProvider');
-  return context;
-}
-```
-
-## Common Patterns
-
-### Conditional Rendering
-
-```tsx
-// Short-circuit
-{isLoggedIn && <Dashboard />}
-
-// Ternary
-{isLoading ? <Spinner /> : <Content />}
-
-// Early return
-if (isLoading) return <Spinner />;
-if (error) return <Error message={error} />;
-return <Content data={data} />;
-```
-
-### List Rendering
-
-```tsx
-{items.map(item => (
-  <ListItem key={item.id} item={item} />
-))}
-```
-
-### Event Handling
-
-```tsx
-<button onClick={() => handleClick(id)}>Click</button>
-<input onChange={e => setName(e.target.value)} />
-<form onSubmit={e => { e.preventDefault(); handleSubmit(); }}>
-```
+---
 
 ## Project Structure
 
-```
-src/
-├── components/
-│   ├── ui/           # Generic UI components
-│   └── features/     # Feature-specific components
-├── hooks/            # Custom hooks
-├── contexts/         # React contexts
-├── pages/            # Page components
-├── services/         # API calls
-├── types/            # TypeScript types
-└── utils/            # Helper functions
-```
+| Directory | Purpose |
+|-----------|---------|
+| **components/ui/** | Generic, reusable (Button, Card) |
+| **components/features/** | Feature-specific compositions |
+| **hooks/** | Custom hooks |
+| **contexts/** | React contexts + providers |
+| **pages/** or **routes/** | Route components |
+| **services/** or **api/** | API calls, data fetching |
+| **types/** | TypeScript types |
+| **utils/** | Pure helper functions |
+
+---
 
 ## Best Practices
 
-1. **Keep components small** - Extract when > 100 lines
-2. **Lift state up** - Share state via common ancestor
-3. **Colocate related code** - Keep styles/tests near components
-4. **Use TypeScript** - Type all props and state
-5. **Memoize wisely** - Only when there's a performance issue
+| Practice | Why |
+|----------|-----|
+| Keep components small (<100 lines) | Readable, testable |
+| Colocate related code | Easier to maintain |
+| Lift state only when needed | Avoid unnecessary complexity |
+| Use TypeScript for props | Catch errors, better DX |
+| Prefer composition over inheritance | React's design philosophy |
+| Extract custom hooks | Reusable logic, testable |
+
+## Resources
+
+- React Docs: <https://react.dev/>
+- Patterns: <https://patterns.dev/>

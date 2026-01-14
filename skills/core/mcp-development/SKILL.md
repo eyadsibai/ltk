@@ -4,162 +4,177 @@ description: Use when building "MCP server", "Model Context Protocol", creating 
 version: 1.0.0
 ---
 
-<!-- Adapted from: awesome-claude-skills/mcp-builder -->
-
 # MCP Server Development Guide
 
 Build high-quality MCP (Model Context Protocol) servers that enable LLMs to interact with external services.
 
-## Core Principles
+---
 
-### Build for Workflows, Not Just API Endpoints
+## Core Design Principles
 
-- Don't simply wrap existing API endpoints
-- Consolidate related operations (e.g., `schedule_event` that checks availability AND creates event)
-- Focus on tools that enable complete tasks
-- Consider what workflows agents actually need
+### Build for Workflows, Not Just APIs
 
-### Optimize for Limited Context
+| Principle | Why |
+|-----------|-----|
+| Consolidate operations | Single tool for complete tasks |
+| Return high-signal data | Agents have limited context |
+| Provide format options | "concise" vs "detailed" modes |
+| Use human-readable IDs | Not technical codes |
+| Make errors actionable | Guide toward correct usage |
 
-- Agents have constrained context windows - make every token count
-- Return high-signal information, not exhaustive data dumps
-- Provide "concise" vs "detailed" response format options
-- Default to human-readable identifiers over technical codes
+**Key concept**: Don't just wrap API endpoints. Design tools that enable complete workflows agents actually need.
 
-### Design Actionable Error Messages
-
-- Error messages should guide agents toward correct usage
-- Suggest specific next steps: "Try using filter='active_only'"
-- Make errors educational, not just diagnostic
+---
 
 ## Development Phases
 
-### Phase 1: Research and Planning
+### Phase 1: Research
 
-1. **Study MCP Protocol**: Fetch `https://modelcontextprotocol.io/llms-full.txt`
-2. **Study SDK Docs**:
-   - Python: `https://raw.githubusercontent.com/modelcontextprotocol/python-sdk/main/README.md`
-   - TypeScript: `https://raw.githubusercontent.com/modelcontextprotocol/typescript-sdk/main/README.md`
-3. **Study Target API**: Read ALL available documentation
-4. **Create Implementation Plan**
+| Step | Action |
+|------|--------|
+| Study MCP Protocol | Read `modelcontextprotocol.io/llms-full.txt` |
+| Study SDK docs | Python or TypeScript SDK README |
+| Study target API | Read ALL available documentation |
+| Create implementation plan | Before writing code |
 
-### Phase 2: Implementation
+### Phase 2: Design
 
-#### Python (FastMCP)
+| Decision | Options |
+|----------|---------|
+| **Language** | Python (FastMCP) or TypeScript |
+| **Tool granularity** | Atomic vs workflow-oriented |
+| **Response format** | JSON, Markdown, or both |
+| **Error handling** | What errors can occur, how to recover |
 
-```python
-from mcp.server import Server
-from pydantic import BaseModel, Field
+### Phase 3: Implementation
 
-server = Server("my-server")
-
-class SearchInput(BaseModel):
-    query: str = Field(..., description="Search query", min_length=1)
-    limit: int = Field(10, description="Max results", ge=1, le=100)
-
-@server.tool()
-async def search(input: SearchInput) -> str:
-    """Search for items matching the query.
-
-    Args:
-        query: The search term to find
-        limit: Maximum number of results (default: 10)
-
-    Returns:
-        Formatted search results with titles and descriptions
-
-    Examples:
-        - search(query="python tutorials", limit=5)
-        - search(query="error handling")
-    """
-    # Implementation
-    pass
-```
-
-#### TypeScript (MCP SDK)
-
-```typescript
-import { Server } from "@modelcontextprotocol/sdk/server/index.js";
-import { z } from "zod";
-
-const server = new Server({ name: "my-server", version: "1.0.0" });
-
-const SearchSchema = z.object({
-  query: z.string().min(1).describe("Search query"),
-  limit: z.number().min(1).max(100).default(10).describe("Max results"),
-}).strict();
-
-server.registerTool({
-  name: "search",
-  description: "Search for items matching the query",
-  inputSchema: SearchSchema,
-  handler: async ({ query, limit }) => {
-    // Implementation
-  },
-});
-```
-
-### Phase 3: Quality Review
-
-#### Tool Annotations
-
-```python
-@server.tool(
-    annotations={
-        "readOnlyHint": True,      # For read-only operations
-        "destructiveHint": False,  # For non-destructive operations
-        "idempotentHint": True,    # If repeated calls have same effect
-        "openWorldHint": True,     # If interacting with external systems
-    }
-)
-```
-
-#### Quality Checklist
-
-- [ ] No duplicated code between tools
-- [ ] Shared logic extracted into functions
-- [ ] Similar operations return similar formats
-- [ ] All external calls have error handling
-- [ ] Full type coverage
-- [ ] Every tool has comprehensive docstrings
+| Component | Purpose |
+|-----------|---------|
+| **Input validation** | Pydantic (Python) or Zod (TypeScript) |
+| **Tool descriptions** | Clear, with examples |
+| **Error messages** | Include suggested next steps |
+| **Response formatting** | Consistent across tools |
 
 ### Phase 4: Testing
 
-**Important**: MCP servers are long-running processes. Don't run directly in main process.
+**Critical**: MCP servers are long-running processes. Never run directly in main process.
 
-**Safe testing approaches:**
+| Approach | How |
+|----------|-----|
+| Evaluation harness | Recommended |
+| tmux session | Run server separately |
+| Timeout wrapper | `timeout 5s python server.py` |
+| MCP Inspector | Official debugging tool |
 
-- Use evaluation harness (recommended)
-- Run server in tmux
-- Use timeout: `timeout 5s python server.py`
+---
 
-## Response Format Guidelines
+## Tool Annotations
 
-### JSON (for programmatic use)
+| Annotation | Meaning | Default |
+|------------|---------|---------|
+| **readOnlyHint** | Doesn't modify state | false |
+| **destructiveHint** | Can cause damage | true |
+| **idempotentHint** | Repeated calls safe | false |
+| **openWorldHint** | Interacts externally | true |
 
-```python
-return json.dumps({
-    "results": items,
-    "total": len(items),
-    "query": query
-}, indent=2)
-```
+**Key concept**: Annotations help the LLM decide when and how safely to use tools.
 
-### Markdown (for human readability)
+---
 
-```python
-return f"""## Search Results for "{query}"
+## Input Design
 
-Found {len(items)} results:
+### Validation Patterns
 
-{format_items_as_list(items)}
-"""
-```
+| Pattern | Use Case |
+|---------|----------|
+| Required fields | Core parameters |
+| Optional with defaults | Convenience parameters |
+| Enums | Limited valid values |
+| Min/max constraints | Numeric bounds |
+| Pattern matching | Format validation (email, URL) |
+
+### Parameter Naming
+
+| Good | Bad | Why |
+|------|-----|-----|
+| `user_email` | `e` | Self-documenting |
+| `limit` | `max_results_to_return` | Concise but clear |
+| `include_archived` | `ia` | Descriptive boolean |
+
+---
+
+## Response Design
+
+### Format Options
+
+| Format | Use Case |
+|--------|----------|
+| **JSON** | Programmatic use, structured data |
+| **Markdown** | Human readability, reports |
+| **Hybrid** | JSON in markdown code blocks |
+
+### Response Guidelines
+
+| Guideline | Why |
+|-----------|-----|
+| ~25,000 token limit | Context constraints |
+| Truncate with indicator | Don't silently cut |
+| Support pagination | `limit` and `offset` params |
+| Include metadata | Total count, has_more |
+
+---
+
+## Error Handling
+
+### Error Message Structure
+
+| Element | Purpose |
+|---------|---------|
+| What failed | Clear description |
+| Why it failed | Root cause if known |
+| How to fix | Suggested next action |
+| Example | Correct usage |
+
+**Key concept**: Error messages should guide the agent toward correct usage, not just diagnose problems.
+
+---
+
+## Quality Checklist
+
+### Code Quality
+
+| Check | Description |
+|-------|-------------|
+| No duplicated code | Extract shared logic |
+| Consistent formats | Similar ops return similar structure |
+| Full error handling | All external calls wrapped |
+| Type coverage | All inputs/outputs typed |
+| Comprehensive docstrings | Every tool documented |
+
+### Tool Quality
+
+| Check | Description |
+|-------|-------------|
+| Clear descriptions | Model knows when to use |
+| Good examples | In docstring |
+| Sensible defaults | Reduce required params |
+| Consistent naming | Group related with prefixes |
+
+---
 
 ## Best Practices
 
-1. **Character Limits**: Implement ~25,000 token limit with truncation
-2. **Pagination**: Support `limit` and `offset` parameters
-3. **Error Messages**: Include suggested next actions
-4. **Consistent Naming**: Group related tools with prefixes
-5. **Validation**: Use Pydantic (Python) or Zod (TypeScript)
+| Practice | Why |
+|----------|-----|
+| One tool = one purpose | Clear mental model |
+| Comprehensive descriptions | LLM selection accuracy |
+| Include examples in docstrings | Show expected usage |
+| Return actionable errors | Enable self-correction |
+| Test with actual LLM | Real-world validation |
+| Version your server | Track compatibility |
+
+## Resources
+
+- MCP Protocol: <https://modelcontextprotocol.io/>
+- Python SDK: <https://github.com/modelcontextprotocol/python-sdk>
+- TypeScript SDK: <https://github.com/modelcontextprotocol/typescript-sdk>
