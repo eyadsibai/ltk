@@ -10,3 +10,6 @@
 [submodule "AI-research-SKILLs"]
 	path = AI-research-SKILLs
 	url = https://github.com/zechenzhangAGI/AI-research-SKILLs.git
+[submodule "claude-scientific-skills"]
+	path = claude-scientific-skills
+	url = https://github.com/K-Dense-AI/claude-scientific-skills.git
