@@ -15,6 +15,20 @@ allowed-tools:
 
 Analyze code for performance issues and apply optimizations.
 
+## Performance Benchmarks
+
+Target these standards when optimizing:
+
+| Metric | Target | Action if Exceeded |
+|--------|--------|-------------------|
+| API response time | <200ms | Profile and optimize |
+| Database query time | <50ms | Add indexes, optimize query |
+| Bundle size per feature | <5KB | Code split or defer |
+| Algorithm complexity | O(n log n) max | Refactor or justify |
+| Page load time (LCP) | <2.5s | Lazy load, cache, CDN |
+| Memory per request | <50MB | Stream, pool objects |
+| Cold start time | <1s | Reduce dependencies |
+
 ## Execution Steps
 
 ### 1. Identify Target
