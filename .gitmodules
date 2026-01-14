@@ -25,3 +25,6 @@
 [submodule "submodules/claude-code-tools"]
 	path = submodules/claude-code-tools
 	url = https://github.com/pchalasani/claude-code-tools.git
+[submodule "submodules/cc-marketplace"]
+	path = submodules/cc-marketplace
+	url = https://github.com/ananddtyagi/cc-marketplace.git
