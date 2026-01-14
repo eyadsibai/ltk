@@ -16,3 +16,9 @@
 [submodule "planning-with-files"]
 	path = submodules/planning-with-files
 	url = https://github.com/OthmanAdi/planning-with-files.git
+[submodule "submodules/compounding-engineering-plugin"]
+	path = submodules/compounding-engineering-plugin
+	url = https://github.com/EveryInc/compounding-engineering-plugin.git
+[submodule "submodules/myclaude"]
+	path = submodules/myclaude
+	url = https://github.com/cexll/myclaude.git
