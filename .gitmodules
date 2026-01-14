@@ -28,3 +28,6 @@
 [submodule "submodules/cc-marketplace"]
 	path = submodules/cc-marketplace
 	url = https://github.com/ananddtyagi/cc-marketplace.git
+[submodule "submodules/awesome-claude-code-plugins"]
+	path = submodules/awesome-claude-code-plugins
+	url = https://github.com/ccplugins/awesome-claude-code-plugins.git
