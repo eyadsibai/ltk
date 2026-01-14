@@ -33,3 +33,9 @@ data.db
 
 # ltk local state
 .last-submodule-sync
+
+# Development symlinks (for self-hosting)
+.claude-plugin/commands
+.claude-plugin/agents
+.claude-plugin/skills
+.claude-plugin/hooks
