@@ -68,13 +68,41 @@ Analyze the codebase for:
 - Missing patterns that could help
 - Anti-patterns
 
-### 4. SOLID Principles
+### 4. SOLID Principles Verification
 
-- Single Responsibility
-- Open/Closed
-- Liskov Substitution
-- Interface Segregation
-- Dependency Inversion
+For each component under review, systematically verify:
+
+| Principle | Question to Answer | Pass/Fail |
+|-----------|-------------------|-----------|
+| Single Responsibility | Does this component have one reason to change? | |
+| Open/Closed | Can behavior be extended without modifying source? | |
+| Liskov Substitution | Can subtypes replace base types without breaking? | |
+| Interface Segregation | Are interfaces focused, not bloated? | |
+| Dependency Inversion | Do high-level modules depend on abstractions? | |
+
+### 5. Architectural Smells to Detect
+
+Look for these anti-patterns:
+
+- **Inappropriate Intimacy**: Components knowing too much about each other's internals
+- **Leaky Abstractions**: Implementation details bleeding through interfaces
+- **Dependency Rule Violations**: Lower layers depending on higher layers
+- **Inconsistent Patterns**: Mixed architectural approaches without justification
+- **Missing Boundaries**: Unclear separation between system components
+- **God Classes**: Classes doing too much, with too many responsibilities
+- **Cyclic Dependencies**: Module A depends on B, B depends on A
+- **Deep Inheritance**: More than 3 levels of inheritance
+
+### 6. Risk Analysis
+
+For significant architectural changes, assess:
+
+| Risk | Impact | Likelihood | Mitigation |
+|------|--------|------------|------------|
+| Breaking existing integrations | H/M/L | H/M/L | [Action] |
+| Performance degradation | H/M/L | H/M/L | [Action] |
+| Increased complexity | H/M/L | H/M/L | [Action] |
+| Migration effort | H/M/L | H/M/L | [Action] |
 
 ## Output Format
 

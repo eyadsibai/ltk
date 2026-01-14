@@ -93,6 +93,31 @@ Fix failing tests by:
 | Test fails due to code bug | Report bug, don't "fix" the test |
 | Unsure about test intent | Analyze surrounding tests for context |
 
+## Test Pyramid Standards
+
+Follow these ratios for balanced test distribution:
+
+| Level | Target | Speed | Scope |
+|-------|--------|-------|-------|
+| Unit Tests | 70% | <100ms | Single function/class |
+| Integration Tests | 20% | <1s | Component interaction |
+| E2E Tests | 10% | <10s | Critical user journeys |
+
+## Coverage Thresholds
+
+Target these coverage minimums:
+
+```javascript
+coverageThreshold: {
+  global: {
+    branches: 80,
+    functions: 80,
+    lines: 80,
+    statements: 80
+  }
+}
+```
+
 ## Test Writing Best Practices
 
 - **Test behavior, not implementation** - Tests should survive refactoring
@@ -101,6 +126,36 @@ Fix failing tests by:
 - **Mock external dependencies** - Isolate units under test
 - **Write tests as documentation** - Readable, intention-revealing
 - **Prioritize bug-catching tests** - Test risky code paths
+- **Use test data factories** - Avoid hardcoded test data
+- **Clean up after tests** - No state leakage between tests
+
+## CI/CD Integration Template
+
+```yaml
+# .github/workflows/test.yml
+name: Test Suite
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install dependencies
+        run: npm ci
+      - name: Run unit tests
+        run: npm run test:unit
+      - name: Run integration tests
+        run: npm run test:integration
+      - name: Generate coverage
+        run: npm run test:coverage
+      - name: Upload to Codecov
+        uses: codecov/codecov-action@v4
+```
 
 ## Framework-Specific Expertise
 
