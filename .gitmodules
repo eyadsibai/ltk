@@ -4,3 +4,6 @@
 [submodule "awesome-claude-skills"]
 	path = awesome-claude-skills
 	url = https://github.com/ComposioHQ/awesome-claude-skills
+[submodule "claude-skills"]
+	path = claude-skills
+	url = https://github.com/alirezarezvani/claude-skills.git
