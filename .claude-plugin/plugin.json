@@ -1,0 +1,19 @@
+{
+  "name": "ltk",
+  "version": "1.0.0",
+  "description": "Local project toolkit with code analysis, workflow automation, and integrations - customizable per-project",
+  "author": {
+    "name": "Eyad",
+    "email": "eyad@example.com"
+  },
+  "keywords": [
+    "security",
+    "code-quality",
+    "automation",
+    "git",
+    "documentation",
+    "refactoring",
+    "testing",
+    "deployment"
+  ]
+}
