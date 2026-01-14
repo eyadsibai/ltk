@@ -6,7 +6,7 @@
 ┌─────────────────────────────────────────────────────────────────┐
 │  ltk                                                            │
 │  ───                                                            │
-│  16 Skills · 12 Commands · 6 Agents · 4 Hooks · 3 MCP Servers   │
+│  30 Skills · 15 Commands · 7 Agents · 4 Hooks · 3 MCP Servers   │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -313,36 +313,54 @@ Skills **load automatically** based on your questions. No manual invocation need
 
 ## What's Included
 
-### Skills (16)
+### Skills (30)
 
 ```
 skills/
-├── core/                        # Language-agnostic (8)
-│   ├── security-scanning/       # Vulnerability detection
-│   ├── code-quality/            # Style, complexity, dead code
-│   ├── architecture-review/     # Structure, dependencies
-│   ├── test-coverage/           # Coverage analysis
-│   ├── git-workflows/           # Commits, PRs, branches
-│   ├── build-deploy/            # CI/CD, deployment
-│   ├── documentation/           # Docs, docstrings, API specs
-│   └── refactoring/             # Safe code restructuring
+├── core/                              # Language-agnostic (22)
+│   │
+│   │  # Original ltk skills
+│   ├── security-scanning/             # Vulnerability detection
+│   ├── code-quality/                  # Style, complexity, dead code
+│   ├── architecture-review/           # Structure, dependencies
+│   ├── test-coverage/                 # Coverage analysis
+│   ├── git-workflows/                 # Commits, PRs, branches
+│   ├── build-deploy/                  # CI/CD, deployment
+│   ├── documentation/                 # Docs, docstrings, API specs
+│   ├── refactoring/                   # Safe code restructuring
+│   │
+│   │  # From superpowers (development workflow)
+│   ├── using-ltk/                     # Meta-skill: how to use skills
+│   ├── verification-before-completion/ # Evidence before claims
+│   ├── systematic-debugging/          # 4-phase root cause investigation
+│   ├── test-driven-development/       # RED-GREEN-REFACTOR cycle
+│   ├── brainstorming/                 # Collaborative design exploration
+│   ├── writing-plans/                 # Detailed implementation planning
+│   ├── executing-plans/               # Batch execution with checkpoints
+│   ├── subagent-driven-development/   # Two-stage review workflow
+│   ├── requesting-code-review/        # How to request reviews
+│   ├── receiving-code-review/         # Technical review response
+│   ├── finishing-a-development-branch/ # Integration workflow
+│   ├── using-git-worktrees/           # Isolated workspace setup
+│   ├── dispatching-parallel-agents/   # Concurrent investigations
+│   └── writing-skills/                # TDD for documentation
 │
-├── python/                      # Python-specific (4)
-│   ├── python-patterns/         # Modern Python, type hints
-│   ├── fastapi/                 # FastAPI development
-│   ├── pytest/                  # Testing with pytest
-│   └── fastapi-testing/         # Combined FastAPI + testing
+├── python/                            # Python-specific (4)
+│   ├── python-patterns/               # Modern Python, type hints
+│   ├── fastapi/                       # FastAPI development
+│   ├── pytest/                        # Testing with pytest
+│   └── fastapi-testing/               # Combined FastAPI + testing
 │
-├── javascript/                  # JavaScript (1)
-│   └── react/                   # React patterns
+├── javascript/                        # JavaScript (1)
+│   └── react/                         # React patterns
 │
-└── design/                      # Design (3)
-    ├── ui-ux/                   # Interface design
-    ├── branding/                # Brand identity
-    └── accessibility/           # a11y, WCAG
+└── design/                            # Design (3)
+    ├── ui-ux/                         # Interface design
+    ├── branding/                      # Brand identity
+    └── accessibility/                 # a11y, WCAG
 ```
 
-### Commands (12)
+### Commands (15)
 
 | Command | What it does |
 |---------|--------------|
@@ -358,8 +376,11 @@ skills/
 | `/ltk:update-readme` | Refresh README content |
 | `/ltk:refactor` | Guided safe refactoring |
 | `/ltk:migrate` | Code migration assistance |
+| `/ltk:brainstorm` | Explore design before implementation |
+| `/ltk:write-plan` | Create detailed implementation plan |
+| `/ltk:execute-plan` | Execute plan with review checkpoints |
 
-### Agents (6)
+### Agents (7)
 
 Agents run **automatically** after you write code:
 
@@ -371,15 +392,63 @@ Agents run **automatically** after you write code:
 | `test-analyzer` | After features | Suggests tests to write |
 | `refactor-assistant` | Complex code | Suggests improvements |
 | `docs-generator` | New code | Generates documentation |
+| `code-reviewer` | After completing tasks | Spec compliance + quality review |
 
 ### Hooks (4)
 
 | Event | What Happens |
 |-------|--------------|
-| Session Start | Loads git status, project structure, TODOs |
+| Session Start | Injects `using-ltk` skill + project context |
 | Pre-Write/Edit | Quick validation before changes |
 | Post-Write/Edit | Suggestions after changes |
 | Notification | Alerts for long tasks |
+
+---
+
+## Superpowers Integration
+
+ltk includes [superpowers](https://github.com/obra/superpowers) as a git submodule for reference and learning. The core development workflow skills have been adapted for ltk.
+
+### What We Adapted
+
+| Superpowers Skill | ltk Skill | Purpose |
+|-------------------|-----------|---------|
+| `using-superpowers` | `using-ltk` | Meta-skill for skill usage |
+| `verification-before-completion` | Same | Evidence before claims |
+| `systematic-debugging` | Same | 4-phase root cause investigation |
+| `test-driven-development` | Same | RED-GREEN-REFACTOR cycle |
+| `brainstorming` | Same | Collaborative design exploration |
+| `writing-plans` | Same | Detailed implementation planning |
+| `executing-plans` | Same | Batch execution with checkpoints |
+| `subagent-driven-development` | Same | Two-stage review workflow |
+| `requesting-code-review` | Same | How to request reviews |
+| `receiving-code-review` | Same | Technical review response |
+| `finishing-a-development-branch` | Same | Integration workflow |
+| `using-git-worktrees` | Same | Isolated workspace setup |
+| `dispatching-parallel-agents` | Same | Concurrent investigations |
+| `writing-skills` | Same | TDD for documentation |
+
+### Updating from Superpowers
+
+To update the submodule with the latest from superpowers:
+
+```bash
+# Update submodule to latest
+git submodule update --remote superpowers
+
+# Check what changed
+cd superpowers && git log --oneline -10
+
+# Review and adapt any new skills/patterns
+```
+
+### Key Concepts from Superpowers
+
+1. **Verification Before Completion** - Never claim work is done without running verification commands
+2. **Systematic Debugging** - Always find root cause before attempting fixes
+3. **Test-Driven Development** - Write failing test first, then minimal code to pass
+4. **Two-Stage Review** - Spec compliance first, then code quality
+5. **Skills are Mandatory** - If a skill applies, you MUST use it (not optional)
 
 ---
 
@@ -582,22 +651,24 @@ ltk/
 ├── .claude-plugin/
 │   └── plugin.json          # Plugin manifest
 ├── skills/                  # Domain knowledge (auto-loads)
-│   ├── core/
-│   ├── python/
-│   ├── javascript/
-│   └── design/
-├── commands/                # /ltk:* commands
-├── agents/                  # Autonomous helpers
+│   ├── core/                # 22 core skills (8 original + 14 from superpowers)
+│   ├── python/              # 4 Python-specific skills
+│   ├── javascript/          # 1 JavaScript skill
+│   └── design/              # 3 design skills
+├── commands/                # /ltk:* commands (15)
+├── agents/                  # Autonomous helpers (7)
 ├── hooks/
-│   └── hooks.json          # Event automation
-├── .mcp.json               # External integrations
-├── install.sh              # Installation script
-├── uninstall.sh            # Removal script
-├── create-skill.sh         # Skill generator
-├── create-command.sh       # Command generator
-├── create-agent.sh         # Agent generator
-├── add-hook.sh             # Hook helper
-└── README.md               # This file
+│   ├── hooks.json           # Event automation config
+│   └── session-start.sh     # Injects using-ltk skill
+├── superpowers/             # Git submodule (reference)
+├── .mcp.json                # External integrations
+├── install.sh               # Installation script
+├── uninstall.sh             # Removal script
+├── create-skill.sh          # Skill generator
+├── create-command.sh        # Command generator
+├── create-agent.sh          # Agent generator
+├── add-hook.sh              # Hook helper
+└── README.md                # This file
 ```
 
 ---
