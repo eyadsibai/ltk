@@ -1,18 +1,18 @@
 [submodule "superpowers"]
-	path = superpowers
+	path = submodules/superpowers
 	url = https://github.com/obra/superpowers
 [submodule "awesome-claude-skills"]
-	path = awesome-claude-skills
+	path = submodules/awesome-claude-skills
 	url = https://github.com/ComposioHQ/awesome-claude-skills
 [submodule "claude-skills"]
-	path = claude-skills
+	path = submodules/claude-skills
 	url = https://github.com/alirezarezvani/claude-skills.git
 [submodule "AI-research-SKILLs"]
-	path = AI-research-SKILLs
+	path = submodules/AI-research-SKILLs
 	url = https://github.com/zechenzhangAGI/AI-research-SKILLs.git
 [submodule "claude-scientific-skills"]
-	path = claude-scientific-skills
+	path = submodules/claude-scientific-skills
 	url = https://github.com/K-Dense-AI/claude-scientific-skills.git
 [submodule "planning-with-files"]
-	path = planning-with-files
+	path = submodules/planning-with-files
 	url = https://github.com/OthmanAdi/planning-with-files.git
