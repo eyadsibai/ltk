@@ -7,3 +7,6 @@
 [submodule "claude-skills"]
 	path = claude-skills
 	url = https://github.com/alirezarezvani/claude-skills.git
+[submodule "AI-research-SKILLs"]
+	path = AI-research-SKILLs
+	url = https://github.com/zechenzhangAGI/AI-research-SKILLs.git
