@@ -98,7 +98,7 @@ Commit Result
 Next Steps
 ----------
 - Push with: git push
-- Create PR with: /mytoolkit:create-pr
+- Create PR with: /ltk:create-pr
 ```
 
 ## Tips

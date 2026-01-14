@@ -60,7 +60,7 @@ Assist with code migrations between versions, patterns, or technologies.
 
 ### Python 2 to 3
 ```
-/mytoolkit:migrate python2to3
+/ltk:migrate python2to3
 ```
 - Print statements to functions
 - Division behavior
