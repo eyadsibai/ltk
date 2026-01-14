@@ -13,3 +13,6 @@
 [submodule "claude-scientific-skills"]
 	path = claude-scientific-skills
 	url = https://github.com/K-Dense-AI/claude-scientific-skills.git
+[submodule "planning-with-files"]
+	path = planning-with-files
+	url = https://github.com/OthmanAdi/planning-with-files.git
