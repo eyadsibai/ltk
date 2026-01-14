@@ -1,6 +1,15 @@
 ---
 name: sync-submodules
 description: Sync and adapt skills, commands, agents, and hooks from all git submodules
+allowed-tools:
+  - Read
+  - Glob
+  - Grep
+  - Bash
+  - Write
+  - Edit
+  - Task
+  - TodoWrite
 ---
 
 # Sync Submodules Command
