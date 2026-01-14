@@ -25,20 +25,25 @@ Create a well-crafted git commit by analyzing changes and generating a meaningfu
 
 3. **If no staged changes**: Prompt to stage changes or offer to stage all.
 
-4. **Pre-commit checks** (optional but recommended):
+4. **Analyze for commit splits**: If changes span multiple concerns:
+   - Identify logically separate changes (different features, unrelated fixes)
+   - Suggest splitting into atomic commits
+   - Example: "These changes include a bug fix AND a new feature - consider two commits"
+
+5. **Pre-commit checks** (optional but recommended):
    - Quick security scan for secrets
    - Basic lint check
    - Type hint validation on changed files
 
-5. **Generate commit message**:
+6. **Generate commit message**:
    - If message argument provided, use it as base
    - Otherwise, generate from analysis
    - Format: `type(scope): subject`
    - Add body with details if significant changes
 
-6. **Create commit**: Execute the commit with the message.
+7. **Create commit**: Execute the commit with the message.
 
-7. **Post-commit**: Show commit summary and next steps.
+8. **Post-commit**: Show commit summary and next steps.
 
 ## Commit Message Format
 
@@ -50,15 +55,22 @@ Create a well-crafted git commit by analyzing changes and generating a meaningfu
 <footer>
 ```
 
-**Types:**
+**Types with Emojis:**
 
-- `feat`: New feature
-- `fix`: Bug fix
-- `docs`: Documentation
-- `style`: Formatting
-- `refactor`: Code restructuring
-- `test`: Adding tests
-- `chore`: Maintenance
+| Type | Emoji | Description |
+|------|-------|-------------|
+| `feat` | ✨ | New feature |
+| `fix` | 🐛 | Bug fix |
+| `docs` | 📝 | Documentation |
+| `style` | 💄 | Formatting/styling |
+| `refactor` | ♻️ | Code restructuring |
+| `test` | ✅ | Adding tests |
+| `chore` | 🔧 | Maintenance |
+| `perf` | ⚡ | Performance |
+| `security` | 🔒 | Security fix |
+| `deps` | 📦 | Dependencies |
+
+Example: `✨ feat(auth): add OAuth2 support`
 
 ## Output Format
 

@@ -38,13 +38,14 @@ For each submodule directory, scan for:
 For each discovered component, determine:
 
 1. **New** - Doesn't exist in ltk yet
-2. **Updated** - Exists but submodule version is different/better
+2. **Similar** - Same concept exists in ltk (ALWAYS compare for improvements)
 3. **Duplicate** - Same concept exists from multiple submodules
-4. **Inferior** - ltk version is already better
+
+**CRITICAL: Never simply skip similar components.** Always compare and identify potential improvements.
 
 ### Step 4: Intelligent Adaptation
 
-**DO NOT simply copy files.** Instead:
+**DO NOT simply copy files. DO NOT simply skip similar components.**
 
 1. **For New Components:**
    - Adapt to ltk namespace and conventions
@@ -52,10 +53,18 @@ For each discovered component, determine:
    - Ensure frontmatter follows ltk format
    - Place in appropriate category directory
 
-2. **For Updates:**
-   - Compare both versions
-   - Merge improvements while keeping ltk customizations
-   - Preserve any ltk-specific enhancements
+2. **For Similar Components (MANDATORY COMPARISON):**
+   - Read BOTH versions side-by-side
+   - Identify unique features in each version
+   - Create improvement checklist:
+     - [ ] Better examples?
+     - [ ] More comprehensive checklist?
+     - [ ] Better workflow/process?
+     - [ ] Additional edge cases handled?
+     - [ ] Framework-specific expertise?
+     - [ ] Better output format?
+   - Merge ALL improvements into ltk version
+   - Document what was learned from comparison
 
 3. **For Duplicates (same concept from multiple sources):**
    - Analyze ALL versions of the component
@@ -86,15 +95,20 @@ Output a summary:
 ### New Components Added:
 - skill: component-name (from: submodule-name)
 
-### Updated Components:
-- skill: component-name (merged improvements from: submodule-name)
+### Improved Components:
+- agent: code-reviewer (added: security checklist from submodule-name)
+- agent: test-analyzer (added: AAA pattern, framework expertise from submodule-name)
+- command: smart-commit (added: emoji support, split analysis from submodule-name)
 
 ### Duplicates Resolved:
 - skill: component-name (combined from: submodule1, submodule2)
 
-### Skipped (ltk version superior):
-- skill: component-name
+### Comparison Notes:
+- component-name: ltk version retained (reason: more comprehensive)
+- component-name: submodule version had X, incorporated into ltk
 ```
+
+**Note: There should be NO "Skipped" section. Every similar component must be compared and either improved or documented why ltk version is retained.**
 
 ## Adaptation Guidelines
 
