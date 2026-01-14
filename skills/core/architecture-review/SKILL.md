@@ -15,12 +15,14 @@ Comprehensive architecture analysis skill for understanding project structure, d
 Understand and evaluate codebase organization:
 
 **Directory Structure Patterns:**
+
 - Flat structure (small projects)
 - Feature-based organization
 - Layer-based organization (MVC, Clean Architecture)
 - Domain-driven design structure
 
 **Key files to identify:**
+
 - Entry points (main.py, index.js, cmd/)
 - Configuration files
 - Test directories
@@ -28,6 +30,7 @@ Understand and evaluate codebase organization:
 - Documentation
 
 **Structure assessment:**
+
 ```
 project/
 ├── src/          # Source code
@@ -43,18 +46,21 @@ project/
 Map and evaluate dependencies:
 
 **Internal Dependencies:**
+
 - Module import graphs
 - Circular dependency detection
 - Coupling analysis
 - Cohesion measurement
 
 **External Dependencies:**
+
 - Third-party package analysis
 - Version constraints
 - Transitive dependencies
 - License compatibility
 
 **Dependency visualization:**
+
 ```bash
 # Python - using pydeps
 pydeps --cluster src/
@@ -71,12 +77,14 @@ npm ls --all
 Identify and resolve circular dependencies:
 
 **Detection approach:**
+
 1. Build import graph from source files
 2. Perform cycle detection (DFS)
 3. Report circular chains
 4. Suggest resolution strategies
 
 **Resolution strategies:**
+
 - Extract shared code to new module
 - Use dependency injection
 - Lazy imports (import inside function)
@@ -87,18 +95,21 @@ Identify and resolve circular dependencies:
 Identify common patterns in code:
 
 **Creational Patterns:**
+
 - Factory (object creation abstraction)
 - Singleton (single instance)
 - Builder (step-by-step construction)
 - Dependency Injection
 
 **Structural Patterns:**
+
 - Adapter (interface conversion)
 - Decorator (dynamic behavior)
 - Facade (simplified interface)
 - Repository (data access abstraction)
 
 **Behavioral Patterns:**
+
 - Strategy (algorithm selection)
 - Observer (event handling)
 - Command (action encapsulation)
@@ -111,21 +122,25 @@ Identify common patterns in code:
 For layered architectures, verify:
 
 **Presentation Layer:**
+
 - Controllers/Views
 - Input validation
 - Response formatting
 
 **Business Layer:**
+
 - Domain logic
 - Business rules
 - Service orchestration
 
 **Data Layer:**
+
 - Repositories
 - Data access
 - External integrations
 
 **Cross-cutting concerns:**
+
 - Logging
 - Authentication
 - Error handling
@@ -134,11 +149,13 @@ For layered architectures, verify:
 ### Coupling & Cohesion
 
 **Coupling (lower is better):**
+
 - Afferent coupling (Ca): Who depends on this module
 - Efferent coupling (Ce): What this module depends on
 - Instability: Ce / (Ca + Ce)
 
 **Cohesion (higher is better):**
+
 - Single responsibility adherence
 - Related functionality grouping
 - Clear module boundaries
@@ -148,22 +165,27 @@ For layered architectures, verify:
 Evaluate adherence to:
 
 **S - Single Responsibility:**
+
 - Each class has one reason to change
 - Clear, focused modules
 
 **O - Open/Closed:**
+
 - Open for extension
 - Closed for modification
 
 **L - Liskov Substitution:**
+
 - Subtypes substitutable for base types
 - Proper inheritance hierarchies
 
 **I - Interface Segregation:**
+
 - Specific interfaces over general ones
 - No forced implementation of unused methods
 
 **D - Dependency Inversion:**
+
 - Depend on abstractions
 - High-level modules independent of low-level
 
@@ -271,6 +293,7 @@ Priority: [High/Medium/Low]
 ## Integration
 
 Coordinate with other skills:
+
 - **refactoring skill**: For implementing architectural changes
 - **documentation skill**: For architecture documentation
 - **code-quality skill**: For detailed code analysis

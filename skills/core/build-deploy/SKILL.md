@@ -15,12 +15,14 @@ Comprehensive build and deployment skill for validation, CI/CD patterns, and dep
 Validate builds before deployment:
 
 **Pre-build checks:**
+
 - Dependencies installed correctly
 - Environment variables set
 - Required services available
 - Configuration files valid
 
 **Build process:**
+
 ```bash
 # Python project
 pip install -r requirements.txt
@@ -36,6 +38,7 @@ npm run build
 ```
 
 **Post-build validation:**
+
 - Build artifacts exist
 - Artifact sizes reasonable
 - Version numbers correct
@@ -46,6 +49,7 @@ npm run build
 Common continuous integration/deployment patterns:
 
 **GitHub Actions:**
+
 ```yaml
 name: CI/CD Pipeline
 
@@ -82,6 +86,7 @@ jobs:
 ```
 
 **Pipeline stages:**
+
 1. **Lint**: Code style and quality
 2. **Test**: Unit and integration tests
 3. **Build**: Create artifacts
@@ -93,24 +98,28 @@ jobs:
 Choose appropriate deployment approach:
 
 **Rolling Deployment:**
+
 - Gradual replacement of instances
 - Zero downtime
 - Easy rollback
 - Best for: Stateless services
 
 **Blue-Green Deployment:**
+
 - Two identical environments
 - Instant switch between versions
 - Simple rollback
 - Best for: Critical services
 
 **Canary Deployment:**
+
 - Small percentage gets new version
 - Gradual traffic increase
 - Risk mitigation
 - Best for: High-traffic services
 
 **Feature Flags:**
+
 - Deploy code, enable separately
 - Gradual rollout to users
 - Quick disable if issues
@@ -121,6 +130,7 @@ Choose appropriate deployment approach:
 Validation before deployment:
 
 **Checklist:**
+
 ```
 [ ] All tests pass
 [ ] Security scan clean
@@ -134,6 +144,7 @@ Validation before deployment:
 ```
 
 **Automated checks:**
+
 ```bash
 # Environment validation
 ./scripts/check-env.sh
@@ -250,6 +261,7 @@ gcloud functions deploy FUNCTION_NAME \
 ### Environment Variables
 
 **Required variables:**
+
 ```bash
 # Application
 APP_ENV=production
@@ -265,6 +277,7 @@ API_KEY=<key>
 ```
 
 **Validation:**
+
 ```python
 required_vars = [
     'DATABASE_URL',
@@ -280,6 +293,7 @@ if missing:
 ### Configuration Management
 
 **Environment-specific configs:**
+
 ```
 config/
 ├── base.py       # Shared settings
@@ -289,6 +303,7 @@ config/
 ```
 
 **Loading pattern:**
+
 ```python
 import os
 env = os.getenv('APP_ENV', 'development')
@@ -352,6 +367,7 @@ def readiness_check():
 ### Deployment Metrics
 
 Track after deployment:
+
 - Response times
 - Error rates
 - Resource utilization
@@ -360,6 +376,7 @@ Track after deployment:
 ## Integration
 
 Coordinate with other skills:
+
 - **security-scanning skill**: Pre-deploy security checks
 - **test-coverage skill**: Ensure adequate coverage
 - **git-workflows skill**: Tag releases, update changelog

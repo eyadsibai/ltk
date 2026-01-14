@@ -15,6 +15,7 @@ Comprehensive documentation skill for generating markdown, docstrings, API docs,
 Generate clear, comprehensive markdown docs:
 
 **README Structure:**
+
 ```markdown
 # Project Name
 
@@ -58,6 +59,7 @@ MIT
 ```
 
 **Documentation files:**
+
 - README.md - Project overview
 - CONTRIBUTING.md - Contribution guidelines
 - CHANGELOG.md - Version history
@@ -69,6 +71,7 @@ MIT
 Generate comprehensive docstrings:
 
 **Google Style (Recommended):**
+
 ```python
 def process_payment(amount: float, currency: str = "USD") -> PaymentResult:
     """Process a payment transaction.
@@ -96,6 +99,7 @@ def process_payment(amount: float, currency: str = "USD") -> PaymentResult:
 ```
 
 **NumPy Style:**
+
 ```python
 def calculate_statistics(data: np.ndarray) -> dict:
     """
@@ -129,6 +133,7 @@ def calculate_statistics(data: np.ndarray) -> dict:
 Generate API reference documentation:
 
 **Sphinx Setup:**
+
 ```bash
 # Install Sphinx
 pip install sphinx sphinx-rtd-theme sphinx-autodoc-typehints
@@ -141,6 +146,7 @@ sphinx-apidoc -o docs/api src/
 ```
 
 **conf.py configuration:**
+
 ```python
 extensions = [
     'sphinx.ext.autodoc',
@@ -160,6 +166,7 @@ autodoc_default_options = {
 ```
 
 **MkDocs Setup:**
+
 ```yaml
 # mkdocs.yml
 site_name: Project Documentation
@@ -187,6 +194,7 @@ nav:
 Generate API specifications:
 
 **OpenAPI 3.0 Format:**
+
 ```yaml
 openapi: 3.0.0
 info:
@@ -263,6 +271,7 @@ components:
 Generate Mermaid diagrams:
 
 **System Architecture:**
+
 ```mermaid
 graph TB
     Client[Client App] --> API[API Gateway]
@@ -274,6 +283,7 @@ graph TB
 ```
 
 **Sequence Diagram:**
+
 ```mermaid
 sequenceDiagram
     participant C as Client
@@ -290,6 +300,7 @@ sequenceDiagram
 ```
 
 **Entity Relationship:**
+
 ```mermaid
 erDiagram
     USER ||--o{ ORDER : places
@@ -310,6 +321,7 @@ erDiagram
 ### Documentation Updates
 
 When code changes:
+
 1. Update affected docstrings
 2. Regenerate API documentation
 3. Update changelog
@@ -345,6 +357,7 @@ When code changes:
 ## Tools Integration
 
 **Documentation generation:**
+
 ```bash
 # Sphinx
 cd docs && make html
@@ -358,6 +371,7 @@ mkdocs serve  # Local preview
 ```
 
 **Docstring validation:**
+
 ```bash
 # Check docstring coverage
 pydocstyle src/
@@ -369,6 +383,7 @@ darglint src/
 ## Integration
 
 Coordinate with other skills:
+
 - **code-quality skill**: Docstring coverage
 - **git-workflows skill**: Changelog updates
 - **architecture-review skill**: Diagram accuracy

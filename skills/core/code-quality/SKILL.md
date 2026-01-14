@@ -15,6 +15,7 @@ Comprehensive code quality analysis skill covering style, complexity, dead code 
 Check adherence to language-specific style guides:
 
 **Python (PEP8/Black):**
+
 - Line length (88 chars for Black, 79 for PEP8)
 - Indentation (4 spaces)
 - Import ordering (standard, third-party, local)
@@ -22,6 +23,7 @@ Check adherence to language-specific style guides:
 - Whitespace usage
 
 **Style check commands:**
+
 ```bash
 # Black formatting check
 black --check --diff .
@@ -38,26 +40,31 @@ isort --check-only --diff .
 Measure and report code complexity:
 
 **Cyclomatic Complexity:**
+
 - Number of independent paths through code
 - Target: < 10 per function
 - Warning: 10-20
 - Critical: > 20
 
 **Cognitive Complexity:**
+
 - Mental effort to understand code
 - Accounts for nesting depth and control flow
 
 **Function Length:**
+
 - Target: < 50 lines
 - Warning: 50-100 lines
 - Critical: > 100 lines
 
 **Nesting Depth:**
+
 - Target: < 4 levels
 - Warning: 4-6 levels
 - Critical: > 6 levels
 
 **Complexity analysis:**
+
 ```bash
 # Using radon for Python
 radon cc . -a -s  # Cyclomatic complexity
@@ -70,6 +77,7 @@ radon hal .       # Halstead metrics
 Identify unused code elements:
 
 **Unused Imports:**
+
 ```bash
 # Python - using autoflake
 autoflake --check --remove-all-unused-imports .
@@ -79,16 +87,19 @@ flake8 --select=F401 .
 ```
 
 **Unused Variables:**
+
 - Local variables assigned but never read
 - Function parameters ignored
 - Class attributes never accessed
 
 **Unused Functions/Classes:**
+
 - Defined but never called
 - Private methods not used internally
 - Dead code branches (always false conditions)
 
 **Unreachable Code:**
+
 - Code after return/raise/break/continue
 - Branches with impossible conditions
 - Deprecated code still in codebase
@@ -98,6 +109,7 @@ flake8 --select=F401 .
 Validate type annotations:
 
 **Missing Type Hints:**
+
 ```bash
 # Using mypy
 mypy --strict .
@@ -108,12 +120,14 @@ mypy --disallow-incomplete-defs .
 ```
 
 **Type Errors:**
+
 - Incompatible types in assignments
 - Wrong argument types
 - Missing return types
 - Generic type issues
 
 **Type Coverage:**
+
 - Percentage of code with type annotations
 - Target: > 80% coverage
 
@@ -155,6 +169,7 @@ For rapid assessment of changes:
 ### Python
 
 **Recommended tooling:**
+
 - Black (formatting)
 - isort (import sorting)
 - flake8 (linting)
@@ -163,6 +178,7 @@ For rapid assessment of changes:
 - vulture (dead code)
 
 **Configuration (pyproject.toml):**
+
 ```toml
 [tool.black]
 line-length = 88
@@ -180,11 +196,13 @@ strict = true
 ### JavaScript/TypeScript
 
 **Recommended tooling:**
+
 - ESLint (linting)
 - Prettier (formatting)
 - TypeScript compiler (type checking)
 
 **Configuration (.eslintrc.json):**
+
 ```json
 {
   "extends": ["eslint:recommended"],
@@ -223,16 +241,19 @@ strict = true
 Present findings organized by severity:
 
 **Errors** (must fix):
+
 - Type errors
 - Syntax issues
 - Critical complexity
 
 **Warnings** (should fix):
+
 - Unused code
 - High complexity
 - Missing types in public APIs
 
 **Info** (consider):
+
 - Style suggestions
 - Optimization opportunities
 - Best practice recommendations
@@ -240,6 +261,7 @@ Present findings organized by severity:
 ## Integration
 
 Coordinate with other skills:
+
 - **refactoring skill**: For complexity reduction
 - **documentation skill**: For missing docstrings
 - **security-scanning skill**: For security-related quality issues

@@ -59,9 +59,11 @@ Assist with code migrations between versions, patterns, or technologies.
 ## Migration Types
 
 ### Python 2 to 3
+
 ```
 /ltk:migrate python2to3
 ```
+
 - Print statements to functions
 - Division behavior
 - Unicode handling
@@ -69,27 +71,33 @@ Assist with code migrations between versions, patterns, or technologies.
 - Library updates
 
 ### Sync to Async
+
 ```
 /mytoolkit:migrate sync-to-async [module]
 ```
+
 - Convert functions to async def
 - Update calls to use await
 - Replace requests with aiohttp
 - Update database calls
 
 ### ORM Migrations
+
 ```
 /mytoolkit:migrate orm
 ```
+
 - Generate migration files
 - Analyze schema changes
 - Apply migrations safely
 - Handle data migrations
 
 ### API Version Upgrade
+
 ```
 /mytoolkit:migrate api v1 v2
 ```
+
 - Identify API changes
 - Update endpoint calls
 - Handle response changes

@@ -11,6 +11,7 @@ Specialized guidance for testing FastAPI applications - combines API patterns wi
 ## Why This Skill?
 
 While `fastapi` and `pytest` skills cover their domains, this skill provides:
+
 - FastAPI-specific test patterns
 - Dependency injection testing
 - Async endpoint testing

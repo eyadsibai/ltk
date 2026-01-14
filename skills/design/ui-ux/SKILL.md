@@ -13,6 +13,7 @@ Guidance for user interface and user experience design decisions.
 ### Visual Hierarchy
 
 Establish clear importance levels:
+
 1. **Size**: Larger elements draw attention first
 2. **Color**: Contrast guides the eye
 3. **Spacing**: White space creates groupings
@@ -27,6 +28,7 @@ Establish clear importance levels:
 ### Feedback
 
 Every action needs feedback:
+
 - **Immediate**: Button press states
 - **Progress**: Loading indicators
 - **Completion**: Success/error messages
@@ -34,6 +36,7 @@ Every action needs feedback:
 ## Layout Patterns
 
 ### Card Layout
+
 ```
 ┌─────────────────┐
 │     Image       │
@@ -43,18 +46,22 @@ Every action needs feedback:
 │ [Action Button] │
 └─────────────────┘
 ```
+
 Use for: Collections, products, articles
 
 ### List Layout
+
 ```
 ┌──┬──────────────┐
 │##│ Title        │
 │  │ Subtitle     │
 └──┴──────────────┘
 ```
+
 Use for: Settings, navigation, data tables
 
 ### Dashboard Layout
+
 ```
 ┌────────┬────────┬────────┐
 │ Metric │ Metric │ Metric │
@@ -154,6 +161,7 @@ xl:  20px  - Heading small
 ### Empty States
 
 Show when no data:
+
 - Friendly illustration
 - Explain what goes here
 - Provide action to add first item

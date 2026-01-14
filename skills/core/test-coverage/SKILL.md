@@ -15,21 +15,25 @@ Comprehensive test coverage analysis skill for measuring coverage, identifying g
 Calculate and report code coverage metrics:
 
 **Line Coverage:**
+
 - Percentage of lines executed by tests
 - Target: > 80%
 - Critical code paths: > 95%
 
 **Branch Coverage:**
+
 - Percentage of branches (if/else) tested
 - Target: > 70%
 - Catches edge cases line coverage misses
 
 **Function Coverage:**
+
 - Percentage of functions called by tests
 - Target: > 90%
 - Quick indicator of test breadth
 
 **Running coverage:**
+
 ```bash
 # Python with pytest-cov
 pytest --cov=src --cov-report=html --cov-report=term-missing
@@ -48,16 +52,19 @@ jest --coverage
 Find untested code areas:
 
 **Completely Untested Files:**
+
 - Files with 0% coverage
 - Often forgotten modules
 - Priority: New features, critical paths
 
 **Partially Tested Functions:**
+
 - Functions with some but not all branches tested
 - Missing edge cases
 - Error handling paths
 
 **Untested Code Patterns:**
+
 ```bash
 # Show lines not covered
 coverage report --show-missing
@@ -74,21 +81,25 @@ coverage json -o coverage.json
 Evaluate test effectiveness beyond coverage:
 
 **Test-to-Code Ratio:**
+
 - Lines of test / Lines of source
 - Target: 1:1 to 2:1
 - Low ratio may indicate insufficient testing
 
 **Assertion Density:**
+
 - Assertions per test function
 - Target: > 1 per test
 - Single assertion per concept (ideally)
 
 **Test Independence:**
+
 - Tests should not depend on each other
 - No shared mutable state
 - Proper setup/teardown
 
 **Test Clarity:**
+
 - Descriptive test names
 - Clear arrange/act/assert structure
 - Documented test purpose
@@ -174,11 +185,13 @@ Recommended Tests
 ### Unit Tests
 
 **Coverage focus:**
+
 - Individual functions/methods
 - Edge cases and boundaries
 - Error conditions
 
 **Best practices:**
+
 - Fast execution (< 100ms each)
 - No external dependencies
 - Use mocks/stubs for isolation
@@ -186,11 +199,13 @@ Recommended Tests
 ### Integration Tests
 
 **Coverage focus:**
+
 - Component interactions
 - Database operations
 - API endpoints
 
 **Best practices:**
+
 - Test real integrations
 - Use test databases/containers
 - Clean up after tests
@@ -198,11 +213,13 @@ Recommended Tests
 ### End-to-End Tests
 
 **Coverage focus:**
+
 - User workflows
 - Critical paths
 - System behavior
 
 **Best practices:**
+
 - Selective coverage (key flows)
 - Realistic test data
 - Stable test environment
@@ -295,6 +312,7 @@ exclude_lines = [
 ## Integration
 
 Coordinate with other skills:
+
 - **code-quality skill**: For test code quality
 - **refactoring skill**: For improving testability
 - **security-scanning skill**: For security test coverage

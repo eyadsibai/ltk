@@ -9,7 +9,11 @@
     },
     "sqlite": {
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-sqlite", "${SQLITE_DB_PATH:-./data.db}"]
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-sqlite",
+        "${SQLITE_DB_PATH:-./data.db}"
+      ]
     },
     "postgres": {
       "command": "npx",

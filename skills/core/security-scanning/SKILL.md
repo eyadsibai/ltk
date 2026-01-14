@@ -15,6 +15,7 @@ Comprehensive security analysis skill for detecting vulnerabilities, secrets, an
 Scan for accidentally committed secrets and credentials:
 
 **Patterns to detect:**
+
 - API keys (AWS, GCP, Azure, Stripe, etc.)
 - Private keys (RSA, SSH, PGP)
 - Passwords and tokens in code
@@ -23,6 +24,7 @@ Scan for accidentally committed secrets and credentials:
 - OAuth client secrets
 
 **Common file locations:**
+
 - `.env` files committed to repo
 - Configuration files (config.py, settings.json)
 - Test fixtures with real credentials
@@ -30,6 +32,7 @@ Scan for accidentally committed secrets and credentials:
 - CI/CD configuration files
 
 **Search patterns:**
+
 ```
 # API Keys
 grep -rE "(api[_-]?key|apikey)\s*[:=]\s*['\"][a-zA-Z0-9]{20,}"
@@ -49,26 +52,31 @@ grep -rE "(password|secret|token)\s*[:=]\s*['\"][^'\"]{8,}"
 Identify common web application vulnerabilities:
 
 **SQL Injection:**
+
 - String concatenation in SQL queries
 - Unparameterized queries
 - Dynamic table/column names from user input
 
 **Cross-Site Scripting (XSS):**
+
 - Unescaped user input in HTML output
 - innerHTML assignments with user data
 - Template rendering without auto-escaping
 
 **Command Injection:**
+
 - Shell command construction with user input
 - subprocess/os.system calls with variables
 - eval() with external data
 
 **Path Traversal:**
+
 - File operations with user-controlled paths
 - Missing path sanitization
 - Symlink following vulnerabilities
 
 **Insecure Deserialization:**
+
 - pickle.loads with untrusted data
 - yaml.load without safe_load
 - JSON parsing of user input into code execution
@@ -78,6 +86,7 @@ Identify common web application vulnerabilities:
 Check for known vulnerabilities in dependencies:
 
 **Python:**
+
 ```bash
 # Using pip-audit
 pip-audit -r requirements.txt
@@ -90,12 +99,14 @@ pip list --outdated
 ```
 
 **JavaScript/Node:**
+
 ```bash
 npm audit
 yarn audit
 ```
 
 **General approach:**
+
 1. Parse dependency files (requirements.txt, package.json, go.mod)
 2. Check versions against known CVE databases
 3. Report severity and remediation guidance
@@ -105,23 +116,27 @@ yarn audit
 Detect insecure coding patterns:
 
 **Weak Cryptography:**
+
 - MD5/SHA1 for password hashing
 - ECB mode encryption
 - Hardcoded encryption keys
 - Weak random number generation
 
 **Authentication Issues:**
+
 - Hardcoded credentials
 - Missing authentication checks
 - Weak password policies
 - Session fixation vulnerabilities
 
 **Authorization Flaws:**
+
 - Missing access control checks
 - IDOR (Insecure Direct Object References)
 - Privilege escalation paths
 
 **Data Exposure:**
+
 - Sensitive data in logs
 - Unencrypted sensitive storage
 - Debug information in production
@@ -151,21 +166,25 @@ For rapid assessment of recent changes:
 Present findings with severity levels:
 
 **Critical**: Immediate exploitation risk
+
 - Hardcoded production credentials
 - Known exploitable CVEs
 - Authentication bypass
 
 **High**: Significant security risk
+
 - SQL injection vulnerabilities
 - XSS in user-facing pages
 - Weak cryptographic usage
 
 **Medium**: Potential security concern
+
 - Missing input validation
 - Outdated dependencies (no known CVE)
 - Insecure defaults
 
 **Low**: Best practice violations
+
 - Verbose error messages
 - Missing security headers
 - Suboptimal configurations
@@ -233,6 +252,7 @@ For each finding, provide:
 ### Reference Files
 
 For detailed vulnerability patterns:
+
 - Consult OWASP Top 10 documentation
 - Check CWE (Common Weakness Enumeration) database
 - Review language-specific security guides

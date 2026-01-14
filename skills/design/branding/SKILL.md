@@ -28,7 +28,9 @@ Guidance for creating and maintaining consistent brand identity.
 ## Color Palette Structure
 
 ### Primary Colors
+
 Main brand colors (1-2):
+
 ```
 Primary:     #2563EB (Blue)
 Primary Dark: #1D4ED8
@@ -36,14 +38,18 @@ Primary Light: #3B82F6
 ```
 
 ### Secondary Colors
+
 Supporting colors (2-3):
+
 ```
 Secondary:   #10B981 (Green)
 Accent:      #F59E0B (Amber)
 ```
 
 ### Neutral Colors
+
 For text, backgrounds, borders:
+
 ```
 Gray 900: #111827 (Text)
 Gray 600: #4B5563 (Secondary text)
@@ -54,7 +60,9 @@ Gray 50:  #F9FAFB (Light backgrounds)
 ```
 
 ### Semantic Colors
+
 For feedback states:
+
 ```
 Success: #10B981
 Warning: #F59E0B
@@ -67,10 +75,12 @@ Info:    #3B82F6
 ### Font Selection
 
 **Heading Font**: Display/impact
+
 - Sans-serif: Inter, Poppins, Montserrat
 - Serif: Playfair Display, Merriweather
 
 **Body Font**: Readability
+
 - Sans-serif: Inter, Open Sans, Roboto
 - Serif: Georgia, Source Serif Pro
 
@@ -95,6 +105,7 @@ Friendly:        Poppins + Nunito
 ### Clear Space
 
 Minimum padding around logo:
+
 ```
 ┌─────────────────────┐
 │         X           │
@@ -128,12 +139,14 @@ Reserved ←——————————→ Enthusiastic
 ### Writing Style
 
 **Do:**
+
 - Use active voice
 - Be concise
 - Address user directly ("you")
 - Use contractions for casual tone
 
 **Don't:**
+
 - Use jargon unnecessarily
 - Be condescending
 - Use passive voice

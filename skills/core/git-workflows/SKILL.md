@@ -15,6 +15,7 @@ Comprehensive git workflow skill for commits, pull requests, branching, and chan
 Generate meaningful commit messages from changes:
 
 **Commit Message Format:**
+
 ```
 <type>(<scope>): <subject>
 
@@ -24,6 +25,7 @@ Generate meaningful commit messages from changes:
 ```
 
 **Types:**
+
 - `feat`: New feature
 - `fix`: Bug fix
 - `docs`: Documentation
@@ -33,6 +35,7 @@ Generate meaningful commit messages from changes:
 - `chore`: Maintenance
 
 **Analysis workflow:**
+
 1. Run `git diff --staged` to see changes
 2. Identify the type of change
 3. Determine scope (affected component)
@@ -40,6 +43,7 @@ Generate meaningful commit messages from changes:
 5. Add body with details if needed
 
 **Good commit examples:**
+
 ```
 feat(auth): add OAuth2 login support
 
@@ -63,6 +67,7 @@ Fixes #456
 Generate comprehensive PR descriptions:
 
 **PR Template:**
+
 ```markdown
 ## Summary
 
@@ -88,6 +93,7 @@ How the changes were tested.
 ```
 
 **PR workflow:**
+
 1. Analyze commits in branch
 2. Summarize overall change purpose
 3. List specific changes made
@@ -99,6 +105,7 @@ How the changes were tested.
 Organize and manage branches effectively:
 
 **Branch naming:**
+
 ```
 feature/ABC-123-add-user-auth
 bugfix/ABC-456-fix-login-error
@@ -109,6 +116,7 @@ release/v1.2.0
 **Branch strategies:**
 
 **Git Flow:**
+
 - main: Production code
 - develop: Integration branch
 - feature/*: New features
@@ -116,10 +124,12 @@ release/v1.2.0
 - hotfix/*: Production fixes
 
 **GitHub Flow:**
+
 - main: Always deployable
 - feature branches: Short-lived
 
 **Trunk-Based:**
+
 - main: All development
 - Short feature branches (< 1 day)
 - Feature flags for WIP
@@ -129,6 +139,7 @@ release/v1.2.0
 Create changelogs from commit history:
 
 **Changelog format:**
+
 ```markdown
 # Changelog
 
@@ -157,6 +168,7 @@ Create changelogs from commit history:
 ```
 
 **Generation workflow:**
+
 1. Get commits since last release tag
 2. Parse commit messages for type/scope
 3. Group by category (Added, Fixed, etc.)
@@ -167,6 +179,7 @@ Create changelogs from commit history:
 ### Pre-Commit Workflow
 
 Before committing:
+
 ```bash
 # Check what will be committed
 git status
@@ -255,6 +268,7 @@ To generate PR description:
 ## Git Configuration
 
 **Recommended global config:**
+
 ```bash
 git config --global user.name "Your Name"
 git config --global user.email "your@email.com"
@@ -264,6 +278,7 @@ git config --global init.defaultBranch main
 ```
 
 **Commit template:**
+
 ```bash
 # .gitmessage
 # <type>(<scope>): <subject>
@@ -278,6 +293,7 @@ git config --global commit.template ~/.gitmessage
 ## Integration
 
 Coordinate with other skills:
+
 - **security-scanning skill**: Check for secrets before commit
 - **code-quality skill**: Ensure quality before commit
 - **documentation skill**: Update docs with changes

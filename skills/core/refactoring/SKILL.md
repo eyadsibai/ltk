@@ -15,6 +15,7 @@ Comprehensive refactoring skill for safe code restructuring, migrations, and mod
 Rename identifiers across the codebase:
 
 **Rename workflow:**
+
 1. **Find all references**: Search for all usages
 2. **Identify scope**: Module-local, package-wide, or public API
 3. **Check dependencies**: External code that might break
@@ -22,6 +23,7 @@ Rename identifiers across the codebase:
 5. **Verify**: Run tests, check imports
 
 **Search patterns:**
+
 ```bash
 # Find all references to a function
 grep -rn "function_name" --include="*.py"
@@ -34,6 +36,7 @@ grep -rn "from .* import.*function_name" --include="*.py"
 ```
 
 **Renaming considerations:**
+
 - Update docstrings mentioning the old name
 - Update comments referencing the name
 - Update configuration files
@@ -45,12 +48,14 @@ grep -rn "from .* import.*function_name" --include="*.py"
 Extract code into separate functions:
 
 **When to extract:**
+
 - Code block is too long (> 20 lines)
 - Code is duplicated elsewhere
 - Code has a clear single purpose
 - Code can be tested independently
 
 **Extraction process:**
+
 1. Identify the code block to extract
 2. Determine inputs (parameters)
 3. Determine outputs (return values)
@@ -59,6 +64,7 @@ Extract code into separate functions:
 6. Add tests for new function
 
 **Before:**
+
 ```python
 def process_order(order):
     # Validate order (candidate for extraction)
@@ -76,6 +82,7 @@ def process_order(order):
 ```
 
 **After:**
+
 ```python
 def validate_order(order: Order) -> None:
     """Validate order has valid items and total."""
@@ -97,6 +104,7 @@ def process_order(order: Order) -> PaymentResult:
 Split large classes into focused components:
 
 **When to split:**
+
 - Class has multiple responsibilities
 - Class has > 500 lines
 - Groups of methods work on different data
@@ -105,6 +113,7 @@ Split large classes into focused components:
 **Splitting strategies:**
 
 **Extract class:**
+
 ```python
 # Before: God class
 class OrderManager:
@@ -134,6 +143,7 @@ class NotificationService:
 Reduce cyclomatic complexity:
 
 **Replace conditionals with polymorphism:**
+
 ```python
 # Before: Complex switch
 def calculate_price(product_type, base_price):
@@ -165,6 +175,7 @@ class Subscription(Product):
 ```
 
 **Extract guard clauses:**
+
 ```python
 # Before: Nested conditionals
 def process(data):
@@ -190,6 +201,7 @@ def process(data):
 Migrate code between patterns or versions:
 
 **Migration types:**
+
 - Python 2 to 3
 - Sync to async
 - ORM migrations
@@ -197,6 +209,7 @@ Migrate code between patterns or versions:
 - Framework migrations
 
 **Migration workflow:**
+
 1. **Assess scope**: What needs to change
 2. **Create compatibility layer**: If gradual migration
 3. **Migrate in phases**: Start with low-risk areas
@@ -204,6 +217,7 @@ Migrate code between patterns or versions:
 5. **Remove old code**: Clean up after migration
 
 **Example: Sync to Async**
+
 ```python
 # Before: Synchronous
 def fetch_user(user_id: int) -> User:
@@ -302,6 +316,7 @@ if can_purchase:
 ### Breaking Changes
 
 When refactoring public APIs:
+
 1. Add deprecation warnings first
 2. Maintain backwards compatibility
 3. Document migration path
@@ -310,6 +325,7 @@ When refactoring public APIs:
 ### Database Migrations
 
 When refactoring data models:
+
 1. Create migration scripts
 2. Test migrations on copy of data
 3. Plan for rollback
@@ -318,6 +334,7 @@ When refactoring data models:
 ### Performance Impact
 
 After refactoring:
+
 1. Run performance benchmarks
 2. Compare with baseline
 3. Profile if regression found
@@ -326,6 +343,7 @@ After refactoring:
 ## Integration
 
 Coordinate with other skills:
+
 - **code-quality skill**: Measure improvement
 - **test-coverage skill**: Ensure test coverage
 - **architecture-review skill**: Validate structural changes

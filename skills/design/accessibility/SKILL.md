@@ -18,6 +18,7 @@ Guidance for creating accessible web applications following WCAG guidelines.
 ## Quick Wins
 
 ### Images
+
 ```html
 <!-- Informative image -->
 <img src="chart.png" alt="Sales grew 25% in Q4 2024">
@@ -27,6 +28,7 @@ Guidance for creating accessible web applications following WCAG guidelines.
 ```
 
 ### Buttons & Links
+
 ```html
 <!-- Good: Descriptive -->
 <button>Add to cart</button>
@@ -38,6 +40,7 @@ Guidance for creating accessible web applications following WCAG guidelines.
 ```
 
 ### Forms
+
 ```html
 <label for="email">Email address</label>
 <input type="email" id="email" aria-describedby="email-hint">
@@ -45,6 +48,7 @@ Guidance for creating accessible web applications following WCAG guidelines.
 ```
 
 ### Headings
+
 ```html
 <!-- Proper hierarchy -->
 <h1>Page Title</h1>
@@ -64,6 +68,7 @@ Guidance for creating accessible web applications following WCAG guidelines.
 | UI components | 3:1 | 3:1 |
 
 ### Don't Rely on Color Alone
+
 ```html
 <!-- Bad: Color only -->
 <span style="color: red">Error</span>
@@ -78,6 +83,7 @@ Guidance for creating accessible web applications following WCAG guidelines.
 ## Keyboard Navigation
 
 ### Focus Management
+
 ```css
 /* Visible focus indicator */
 :focus {
@@ -90,6 +96,7 @@ Guidance for creating accessible web applications following WCAG guidelines.
 ```
 
 ### Tab Order
+
 ```html
 <!-- Natural order follows DOM -->
 <nav>
@@ -102,6 +109,7 @@ Guidance for creating accessible web applications following WCAG guidelines.
 ```
 
 ### Keyboard Shortcuts
+
 - `Tab`: Move forward
 - `Shift+Tab`: Move backward
 - `Enter/Space`: Activate
@@ -144,6 +152,7 @@ Guidance for creating accessible web applications following WCAG guidelines.
 ## Component Patterns
 
 ### Modal Dialog
+
 ```html
 <div role="dialog" aria-modal="true" aria-labelledby="dialog-title">
   <h2 id="dialog-title">Confirm Action</h2>
@@ -154,6 +163,7 @@ Guidance for creating accessible web applications following WCAG guidelines.
 ```
 
 ### Tabs
+
 ```html
 <div role="tablist">
   <button role="tab" aria-selected="true" aria-controls="panel1">Tab 1</button>
@@ -166,17 +176,20 @@ Guidance for creating accessible web applications following WCAG guidelines.
 ## Testing Checklist
 
 ### Automated Testing
+
 - [ ] Run axe or Lighthouse accessibility audit
 - [ ] Check color contrast with WebAIM checker
 - [ ] Validate HTML
 
 ### Manual Testing
+
 - [ ] Navigate with keyboard only (no mouse)
 - [ ] Test with screen reader (VoiceOver, NVDA)
 - [ ] Zoom to 200% - is content usable?
 - [ ] Disable CSS - is content logical?
 
 ### Screen Reader Testing
+
 ```
 macOS: VoiceOver (Cmd + F5)
 Windows: NVDA (free) or JAWS

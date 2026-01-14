@@ -108,27 +108,32 @@ See [CONTRIBUTING.md](CONTRIBUTING.md)
 ## License
 
 [License type] - see [LICENSE](LICENSE)
+
 ```
 
 ## Output Format
 
 ```
+
 README Update
 =============
 
 Current README Analysis
 -----------------------
+
 Sections found: X
 Last updated: [date if detectable]
 
 Outdated Sections
 -----------------
+
 - Installation: Dependencies changed
 - Usage: New features not documented
 - Configuration: Missing new options
 
 Updates Made
 ------------
+
 [✓] Updated installation instructions
 [✓] Added new features to list
 [✓] Updated configuration table
@@ -137,9 +142,11 @@ Updates Made
 
 README Preview
 --------------
+
 [Show key updated sections]
 
 Changes saved to README.md
+
 ```
 
 ## Tips

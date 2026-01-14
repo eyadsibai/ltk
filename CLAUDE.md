@@ -22,6 +22,7 @@ This is a **Claude Code plugin** with four component types:
 ## Component File Formats
 
 ### Skills (`skills/category/name/SKILL.md`)
+
 ```yaml
 ---
 name: Skill Name
@@ -32,6 +33,7 @@ version: 1.0.0
 ```
 
 ### Commands (`commands/name.md`)
+
 ```yaml
 ---
 name: command-name
@@ -45,6 +47,7 @@ allowed-tools:
 ```
 
 ### Agents (`agents/name.md`)
+
 ```yaml
 ---
 description: What this agent does
@@ -59,6 +62,7 @@ color: cyan  # red, green, yellow, blue, magenta, cyan, white
 ```
 
 ### Hooks (`hooks/hooks.json`)
+
 ```json
 {
   "hooks": [{
@@ -97,6 +101,7 @@ color: cyan  # red, green, yellow, blue, magenta, cyan, white
 ## MCP Server Configuration
 
 Defined in `.mcp.json`. Requires environment variables:
+
 - `GITHUB_TOKEN` - For GitHub MCP server
 - `DATABASE_URL` - For PostgreSQL MCP server
 - `SQLITE_DB_PATH` - For SQLite MCP server (defaults to `./data.db`)
@@ -104,6 +109,7 @@ Defined in `.mcp.json`. Requires environment variables:
 ## Writing Effective Descriptions
 
 **Skills** - Be specific about trigger phrases:
+
 ```yaml
 # Good: Specific triggers
 description: This skill should be used when asking about "FastAPI", "FastAPI routes", "FastAPI dependencies"
@@ -113,6 +119,7 @@ description: This skill is for Python development
 ```
 
 **Agents** - Be specific about when to trigger:
+
 ```yaml
 # Good: Specific context
 whenToUse: After writing Python code that contains SQL queries or database operations

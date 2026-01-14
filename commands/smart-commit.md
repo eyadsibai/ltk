@@ -51,6 +51,7 @@ Create a well-crafted git commit by analyzing changes and generating a meaningfu
 ```
 
 **Types:**
+
 - `feat`: New feature
 - `fix`: Bug fix
 - `docs`: Documentation

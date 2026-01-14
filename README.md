@@ -52,7 +52,6 @@ Claude: [fastapi + pytest skills auto-load into my knowledge]
 
 **Think of it as:** A reference book that opens to the right page automatically
 
-
 ### Commands - Manual Actions
 
 **What:** Specific tasks you explicitly request
@@ -68,7 +67,6 @@ Claude: [Runs security scan on codebase]
 ```
 
 **Think of it as:** Buttons you press to do specific things
-
 
 ### Agents - Proactive Helpers
 
@@ -87,7 +85,6 @@ Claude: [security-analyzer agent activates]
 
 **Think of it as:** A team of experts looking over your shoulder
 
-
 ### Hooks - System Automation
 
 **What:** Scripts/prompts that run on specific system events
@@ -104,7 +101,6 @@ Claude: [Has project context ready]
 ```
 
 **Think of it as:** Automatic setup and cleanup routines
-
 
 ### Side-by-Side Comparison
 
@@ -261,7 +257,7 @@ cd /path/to/your/project
 claude
 ```
 
-### 3. Use it!
+### 3. Use it
 
 ```
 You: "How do I test my FastAPI endpoints?"

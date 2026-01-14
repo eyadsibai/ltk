@@ -61,26 +61,32 @@ Perform safe refactoring operations with comprehensive checks and verification.
 ## Refactoring Types
 
 ### Rename
+
 ```
 /mytoolkit:refactor rename old_name new_name
 ```
+
 - Find all occurrences
 - Update imports
 - Update references
 - Update documentation
 
 ### Extract
+
 ```
 /mytoolkit:refactor extract function_name file:start-end
 ```
+
 - Extract code block to new function
 - Identify parameters and return values
 - Replace original with function call
 
 ### Simplify
+
 ```
 /mytoolkit:refactor simplify file_or_function
 ```
+
 - Reduce cyclomatic complexity
 - Flatten nested conditionals
 - Remove dead code
