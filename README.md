@@ -6,7 +6,7 @@
 ┌─────────────────────────────────────────────────────────────────┐
 │  ltk                                                            │
 │  ───                                                            │
-│  30 Skills · 15 Commands · 7 Agents · 4 Hooks · 3 MCP Servers   │
+│  31 Skills · 16 Commands · 7 Agents · 4 Hooks · 3 MCP Servers   │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -317,7 +317,10 @@ Skills **load automatically** based on your questions. No manual invocation need
 
 ```
 skills/
-├── core/                              # Language-agnostic (22)
+├── core/                              # Language-agnostic (23)
+│   │
+│   │  # Meta skills
+│   ├── syncing-submodules/           # Adapt from plugin submodules
 │   │
 │   │  # Original ltk skills
 │   ├── security-scanning/             # Vulnerability detection
@@ -379,6 +382,7 @@ skills/
 | `/ltk:brainstorm` | Explore design before implementation |
 | `/ltk:write-plan` | Create detailed implementation plan |
 | `/ltk:execute-plan` | Execute plan with review checkpoints |
+| `/ltk:sync-submodules` | Adapt skills/commands from all submodules |
 
 ### Agents (7)
 
@@ -428,9 +432,29 @@ ltk includes [superpowers](https://github.com/obra/superpowers) as a git submodu
 | `dispatching-parallel-agents` | Same | Concurrent investigations |
 | `writing-skills` | Same | TDD for documentation |
 
-### Updating from Superpowers
+### Updating from Submodules
 
-To update the submodule with the latest from superpowers:
+ltk can learn from multiple Claude Code plugin submodules and intelligently adapt the best patterns.
+
+**Quick Update:**
+
+```bash
+# Update all submodules and check for changes
+./scripts/update-submodules.sh
+
+# Then in Claude Code, run:
+/ltk:sync-submodules
+```
+
+**What the sync does:**
+
+1. Scans all submodules for skills, commands, agents, hooks
+2. Compares against existing ltk components
+3. **Does NOT copy** - intelligently adapts and synthesizes
+4. Resolves duplicates by creating superior merged versions
+5. Reports all changes made
+
+**Manual Update:**
 
 ```bash
 # Update submodule to latest
@@ -438,8 +462,6 @@ git submodule update --remote superpowers
 
 # Check what changed
 cd superpowers && git log --oneline -10
-
-# Review and adapt any new skills/patterns
 ```
 
 ### Key Concepts from Superpowers
@@ -651,7 +673,7 @@ ltk/
 ├── .claude-plugin/
 │   └── plugin.json          # Plugin manifest
 ├── skills/                  # Domain knowledge (auto-loads)
-│   ├── core/                # 22 core skills (8 original + 14 from superpowers)
+│   ├── core/                # 23 core skills (8 original + 14 superpowers + 1 meta)
 │   ├── python/              # 4 Python-specific skills
 │   ├── javascript/          # 1 JavaScript skill
 │   └── design/              # 3 design skills
@@ -660,6 +682,8 @@ ltk/
 ├── hooks/
 │   ├── hooks.json           # Event automation config
 │   └── session-start.sh     # Injects using-ltk skill
+├── scripts/
+│   └── update-submodules.sh # Update and check submodules
 ├── superpowers/             # Git submodule (reference)
 ├── .mcp.json                # External integrations
 ├── install.sh               # Installation script

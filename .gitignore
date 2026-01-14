@@ -30,3 +30,6 @@ Thumbs.db
 *.sqlite
 *.sqlite3
 data.db
+
+# ltk local state
+.last-submodule-sync

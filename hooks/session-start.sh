@@ -11,6 +11,17 @@ PLUGIN_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 # Read using-ltk content
 using_ltk_content=$(cat "${PLUGIN_ROOT}/skills/core/using-ltk/SKILL.md" 2>&1 || echo "Error reading using-ltk skill")
 
+# Check if submodule sync is needed
+sync_reminder=""
+LAST_SYNC_FILE="${PLUGIN_ROOT}/.last-submodule-sync"
+if [[ -f "$LAST_SYNC_FILE" ]]; then
+    needs_sync=$(grep "^needs_sync=" "$LAST_SYNC_FILE" 2>/dev/null | cut -d= -f2 || echo "false")
+    if [[ "$needs_sync" == "true" ]]; then
+        submodules=$(grep "^submodules=" "$LAST_SYNC_FILE" 2>/dev/null | cut -d= -f2 || echo "")
+        sync_reminder="\\n\\n**SUBMODULE SYNC NEEDED:** Run /ltk:sync-submodules to adapt changes from: ${submodules}"
+    fi
+fi
+
 # Escape outputs for JSON using pure bash
 escape_for_json() {
     local input="$1"
@@ -37,7 +48,7 @@ cat <<EOF
 {
   "hookSpecificOutput": {
     "hookEventName": "SessionStart",
-    "additionalContext": "<EXTREMELY_IMPORTANT>\nYou have ltk (Claude Code toolkit) installed.\n\n**Below is the full content of your 'ltk:using-ltk' skill - your introduction to using skills. For all other skills, use the 'Skill' tool:**\n\n${using_ltk_escaped}\n\n</EXTREMELY_IMPORTANT>"
+    "additionalContext": "<EXTREMELY_IMPORTANT>\nYou have ltk (Claude Code toolkit) installed.\n\n**Below is the full content of your 'ltk:using-ltk' skill - your introduction to using skills. For all other skills, use the 'Skill' tool:**\n\n${using_ltk_escaped}${sync_reminder}\n\n</EXTREMELY_IMPORTANT>"
   }
 }
 EOF
