@@ -6,7 +6,7 @@
 ┌─────────────────────────────────────────────────────────────────┐
 │  ltk                                                            │
 │  ───                                                            │
-│  16 Skills · 12 Commands · 6 Agents · 4 Hooks · 3 MCP Servers  │
+│  16 Skills · 12 Commands · 6 Agents · 4 Hooks · 3 MCP Servers   │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -126,7 +126,7 @@ Claude: [Has project context ready]
 │       │                                                                 │
 │       ▼                                                                 │
 │  ┌─────────┐                                                            │
-│  │  HOOKS  │ ──→ Load git status, project structure, TODOs             │
+│  │  HOOKS  │ ──→ Load git status, project structure, TODOs              │
 │  └─────────┘                                                            │
 │       │                                                                 │
 │       ▼                                                                 │
@@ -134,7 +134,7 @@ Claude: [Has project context ready]
 │       │                                                                 │
 │       ▼                                                                 │
 │  ┌─────────┐                                                            │
-│  │ SKILLS  │ ──→ fastapi + security-scanning skills load               │
+│  │ SKILLS  │ ──→ fastapi + security-scanning skills load                │
 │  └─────────┘                                                            │
 │       │                                                                 │
 │       ▼                                                                 │
@@ -145,15 +145,15 @@ Claude: [Has project context ready]
 │       │                                                                 │
 │       ▼                                                                 │
 │  ┌─────────┐                                                            │
-│  │ AGENTS  │ ──→ security-analyzer checks your code                    │
-│  └─────────┘     quality-reviewer suggests improvements                │
+│  │ AGENTS  │ ──→ security-analyzer checks your code                     │
+│  └─────────┘     quality-reviewer suggests improvements                 │
 │       │                                                                 │
 │       ▼                                                                 │
 │  YOU TYPE: /ltk:scan-security                                           │
 │       │                                                                 │
 │       ▼                                                                 │
 │  ┌──────────┐                                                           │
-│  │ COMMANDS │ ──→ Full security scan runs                              │
+│  │ COMMANDS │ ──→ Full security scan runs                               │
 │  └──────────┘                                                           │
 │                                                                         │
 └─────────────────────────────────────────────────────────────────────────┘
@@ -283,24 +283,24 @@ You: *write some Python code*
 Skills **load automatically** based on your questions. No manual invocation needed.
 
 ```
-┌──────────────────────────────────────────────────────────────────┐
-│                                                                  │
+┌─────────────────────────────────────────────────────────────────┐
+│                                                                 │
 │   You: "How do I add authentication to my FastAPI app?"         │
-│                                                                  │
+│                                                                 │
 │   ┌─────────────────────────────────────────────────────────┐   │
-│   │  Claude matches against ALL skill descriptions:          │   │
-│   │                                                          │   │
+│   │  Claude matches against ALL skill descriptions:         │   │
+│   │                                                         │   │
 │   │  ✓ fastapi           "FastAPI" matched                  │   │
 │   │  ✓ python-patterns   "Python" context                   │   │
 │   │  ✓ security-scanning "authentication" = security        │   │
 │   │  ✗ react             not relevant                       │   │
 │   │  ✗ branding          not relevant                       │   │
 │   └─────────────────────────────────────────────────────────┘   │
-│                              ↓                                   │
-│   Only matched skills load their full content                    │
+│                              ↓                                  │
+│   Only matched skills load their full content                   │
 │   Others stay as tiny metadata (~100 words each)                │
-│                                                                  │
-└──────────────────────────────────────────────────────────────────┘
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
 ### Token Efficiency
