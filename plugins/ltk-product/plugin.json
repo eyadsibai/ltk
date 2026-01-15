@@ -1,0 +1,20 @@
+{
+  "name": "ltk-product",
+  "version": "1.0.0",
+  "description": "Product management, marketing, customer success, and business strategy for Claude Code",
+  "author": "LTK",
+  "dependencies": ["ltk-core"],
+  "components": {
+    "skills": "skills/",
+    "agents": "agents/",
+    "commands": "commands/",
+    "hooks": "hooks/"
+  },
+  "keywords": [
+    "product-management",
+    "marketing",
+    "customer-success",
+    "business-strategy",
+    "analytics"
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "name": "ltk-design",
+  "version": "1.0.0",
+  "description": "UI/UX design, accessibility, design systems, and branding for Claude Code",
+  "author": "LTK",
+  "dependencies": ["ltk-core"],
+  "components": {
+    "skills": "skills/",
+    "agents": "agents/",
+    "commands": "commands/",
+    "hooks": "hooks/"
+  },
+  "keywords": [
+    "ui-ux",
+    "accessibility",
+    "design-systems",
+    "branding",
+    "user-experience",
+    "wcag"
+  ]
+}

@@ -4,11 +4,49 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What This Is
 
-`ltk` is a Claude Code plugin providing code analysis, workflow automation, and integrations. It's designed to be installed into other projects to extend Claude Code's capabilities.
+`ltk` is a Claude Code plugin collection providing code analysis, workflow automation, and integrations. It's organized into **7 domain-based plugins** that can be installed selectively into projects.
 
-## Plugin Architecture
+## Multi-Plugin Architecture
 
-This is a **Claude Code plugin** with four component types:
+ltk is organized into domain-specific plugins for modular installation:
+
+| Plugin | Purpose | Key Components |
+|--------|---------|----------------|
+| **ltk-core** | Context engineering, foundations | Memory systems, agent patterns, prompt engineering |
+| **ltk-engineering** | Software development | Testing, architecture, code quality, refactoring |
+| **ltk-data** | Data & databases | SQL, ML, analytics, data pipelines |
+| **ltk-devops** | Infrastructure | Kubernetes, security, secrets, observability |
+| **ltk-design** | UI/UX | Accessibility, design systems, branding |
+| **ltk-product** | Product & business | Product management, marketing, strategy |
+| **ltk-github** | Git workflows | PRs, commits, code review |
+
+**Dependencies**: All plugins depend on `ltk-core` which provides foundational knowledge.
+
+## Plugin Directory Structure
+
+```
+ltk/
+├── plugins/
+│   ├── marketplace.json        # Central registry of all plugins
+│   ├── ltk-core/
+│   │   ├── plugin.json
+│   │   ├── skills/
+│   │   ├── agents/
+│   │   ├── commands/
+│   │   └── hooks/
+│   ├── ltk-engineering/
+│   ├── ltk-data/
+│   ├── ltk-devops/
+│   ├── ltk-design/
+│   ├── ltk-product/
+│   └── ltk-github/
+├── install.sh                  # Selective plugin installer
+└── submodules/                 # Source material from git submodules
+```
+
+## Component Types
+
+Each plugin contains four component types:
 
 | Component | Location | Purpose | How It Works |
 |-----------|----------|---------|--------------|
@@ -19,9 +57,43 @@ This is a **Claude Code plugin** with four component types:
 
 **Key insight**: Skills provide knowledge, agents do work. Skills are passive reference material; agents actively analyze and report.
 
+## Installation
+
+### Selective Installation
+
+```bash
+# Install specific plugins
+./install.sh --core --engineering /path/to/project
+
+# Use presets
+./install.sh --preset=developer /path/to/project    # core + engineering + github
+./install.sh --preset=fullstack /path/to/project    # core + engineering + data + github
+./install.sh --preset=devops /path/to/project       # core + devops + github
+./install.sh --preset=design /path/to/project       # core + design
+./install.sh --preset=all /path/to/project          # all plugins
+
+# Development mode (symlinks)
+./install.sh -l --all /path/to/project
+
+# List available plugins
+./install.sh --list
+```
+
+### Available Presets
+
+| Preset | Plugins Included |
+|--------|------------------|
+| `minimal` | ltk-core |
+| `developer` | ltk-core + ltk-engineering + ltk-github |
+| `fullstack` | ltk-core + ltk-engineering + ltk-data + ltk-github |
+| `devops` | ltk-core + ltk-devops + ltk-github |
+| `design` | ltk-core + ltk-design |
+| `product` | ltk-core + ltk-product |
+| `all` | All 7 plugins |
+
 ## Component File Formats
 
-### Skills (`skills/category/name/SKILL.md`)
+### Skills (`skills/name/SKILL.md`)
 
 ```yaml
 ---
@@ -67,7 +139,7 @@ color: cyan  # red, green, yellow, blue, magenta, cyan, white
 {
   "hooks": [{
     "event": "SessionStart|PreToolUse|PostToolUse|Stop|Notification",
-    "matcher": "Write|Edit",  // for Pre/PostToolUse only
+    "matcher": "Write|Edit",
     "type": "prompt|command",
     "prompt": "Instructions for Claude",
     "timeout": 10000
@@ -88,14 +160,6 @@ color: cyan  # red, green, yellow, blue, magenta, cyan, white
 ./create-command.sh --list
 ./create-agent.sh --list
 ./add-hook.sh --list
-```
-
-## Installation Scripts
-
-```bash
-./install.sh /path/to/project      # Copy plugin to project
-./install.sh -l /path/to/project   # Symlink (for development)
-./uninstall.sh /path/to/project    # Remove from project
 ```
 
 ## MCP Server Configuration
@@ -131,13 +195,3 @@ whenToUse: After writing code
 ## Valid Agent Colors
 
 Only these colors are valid: `red`, `green`, `yellow`, `blue`, `magenta`, `cyan`, `white`
-
-## Directory Structure
-
-```
-skills/
-├── core/           # Language-agnostic (security, quality, git, etc.)
-├── python/         # Python-specific (fastapi, pytest, patterns)
-├── javascript/     # JS/TS-specific (react)
-└── design/         # Design-related (ui-ux, branding, accessibility)
-```

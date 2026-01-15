@@ -1,0 +1,21 @@
+{
+  "name": "ltk-github",
+  "version": "1.0.0",
+  "description": "GitHub workflows, PR management, commit automation, and code review for Claude Code",
+  "author": "LTK",
+  "dependencies": ["ltk-core"],
+  "components": {
+    "skills": "skills/",
+    "agents": "agents/",
+    "commands": "commands/",
+    "hooks": "hooks/"
+  },
+  "keywords": [
+    "github",
+    "git",
+    "pull-requests",
+    "commits",
+    "code-review",
+    "workflows"
+  ]
+}

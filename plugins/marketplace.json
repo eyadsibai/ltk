@@ -1,0 +1,86 @@
+{
+  "name": "ltk-plugins",
+  "version": "1.0.0",
+  "description": "Claude Code plugin collection for code analysis, workflow automation, and integrations",
+  "plugins": [
+    {
+      "id": "ltk-core",
+      "name": "LTK Core",
+      "description": "Essential context engineering, memory systems, and agent foundations",
+      "path": "ltk-core",
+      "dependencies": [],
+      "tags": ["core", "context", "memory", "agents", "foundations"]
+    },
+    {
+      "id": "ltk-engineering",
+      "name": "LTK Engineering",
+      "description": "Software development, testing, architecture patterns, and code quality",
+      "path": "ltk-engineering",
+      "dependencies": ["ltk-core"],
+      "tags": ["python", "javascript", "testing", "architecture", "patterns"]
+    },
+    {
+      "id": "ltk-data",
+      "name": "LTK Data",
+      "description": "Data processing, databases, SQL optimization, and data pipelines",
+      "path": "ltk-data",
+      "dependencies": ["ltk-core"],
+      "tags": ["data", "sql", "databases", "pipelines", "analytics"]
+    },
+    {
+      "id": "ltk-devops",
+      "name": "LTK DevOps",
+      "description": "Infrastructure, Kubernetes, security, secrets management, and observability",
+      "path": "ltk-devops",
+      "dependencies": ["ltk-core"],
+      "tags": [
+        "devops",
+        "kubernetes",
+        "security",
+        "infrastructure",
+        "observability"
+      ]
+    },
+    {
+      "id": "ltk-design",
+      "name": "LTK Design",
+      "description": "UI/UX design, accessibility, design systems, and branding",
+      "path": "ltk-design",
+      "dependencies": ["ltk-core"],
+      "tags": ["design", "ui", "ux", "accessibility", "branding"]
+    },
+    {
+      "id": "ltk-product",
+      "name": "LTK Product",
+      "description": "Product management, marketing, customer success, and business strategy",
+      "path": "ltk-product",
+      "dependencies": ["ltk-core"],
+      "tags": ["product", "marketing", "business", "strategy"]
+    },
+    {
+      "id": "ltk-github",
+      "name": "LTK GitHub",
+      "description": "GitHub workflows, PR management, commit automation, and code review",
+      "path": "ltk-github",
+      "dependencies": ["ltk-core"],
+      "tags": ["github", "git", "pr", "commits", "review"]
+    }
+  ],
+  "presets": {
+    "minimal": ["ltk-core"],
+    "developer": ["ltk-core", "ltk-engineering", "ltk-github"],
+    "fullstack": ["ltk-core", "ltk-engineering", "ltk-data", "ltk-github"],
+    "devops": ["ltk-core", "ltk-devops", "ltk-github"],
+    "design": ["ltk-core", "ltk-design"],
+    "product": ["ltk-core", "ltk-product"],
+    "all": [
+      "ltk-core",
+      "ltk-engineering",
+      "ltk-data",
+      "ltk-devops",
+      "ltk-design",
+      "ltk-product",
+      "ltk-github"
+    ]
+  }
+}

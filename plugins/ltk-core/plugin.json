@@ -1,0 +1,22 @@
+{
+  "name": "ltk-core",
+  "version": "1.0.0",
+  "description": "Essential context engineering, memory systems, and agent foundations for Claude Code",
+  "author": "LTK",
+  "dependencies": [],
+  "components": {
+    "skills": "skills/",
+    "agents": "agents/",
+    "commands": "commands/",
+    "hooks": "hooks/"
+  },
+  "keywords": [
+    "context-engineering",
+    "memory-systems",
+    "agent-evaluation",
+    "context-optimization",
+    "context-degradation",
+    "tool-design",
+    "multi-agent"
+  ]
+}

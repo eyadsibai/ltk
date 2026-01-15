@@ -32,5 +32,17 @@
 	path = submodules/awesome-claude-code-plugins
 	url = https://github.com/ccplugins/awesome-claude-code-plugins.git
 [submodule "ccplugins/claude-code-settings"]
-	path = ccplugins/claude-code-settings
+	path = submodules/claude-code-settings
 	url = https://github.com/feiskyer/claude-code-settings.git
+[submodule "submodules/atomic-agents"]
+	path = submodules/atomic-agents
+	url = https://github.com/BrainBlend-AI/atomic-agents.git
+[submodule "submodules/agent-skills-context-engineering"]
+	path = submodules/agent-skills-context-engineering
+	url = https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering.git
+[submodule "submodules/wshobson-agents"]
+	path = submodules/wshobson-agents
+	url = https://github.com/wshobson/agents.git
+[submodule "submodules/claude-plugins-official"]
+	path = submodules/claude-plugins-official
+	url = https://github.com/anthropics/claude-plugins-official.git

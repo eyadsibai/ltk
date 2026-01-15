@@ -1,0 +1,23 @@
+{
+  "name": "ltk-devops",
+  "version": "1.0.0",
+  "description": "Infrastructure, Kubernetes, security, secrets management, and observability for Claude Code",
+  "author": "LTK",
+  "dependencies": ["ltk-core"],
+  "components": {
+    "skills": "skills/",
+    "agents": "agents/",
+    "commands": "commands/",
+    "hooks": "hooks/"
+  },
+  "keywords": [
+    "kubernetes",
+    "docker",
+    "security",
+    "secrets",
+    "helm",
+    "observability",
+    "infrastructure",
+    "devops"
+  ]
+}

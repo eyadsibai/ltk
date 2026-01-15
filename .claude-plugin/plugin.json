@@ -1,19 +1,13 @@
 {
   "name": "ltk",
   "version": "1.0.0",
-  "description": "Local project toolkit with code analysis, workflow automation, and integrations - customizable per-project",
-  "author": {
-    "name": "Eyad",
-    "email": "eyad.alsibai@gmail.com"
+  "description": "LTK Plugin Collection - Development Mode (ltk-core only). Use install.sh for full installation.",
+  "author": "LTK",
+  "components": {
+    "skills": "skills/",
+    "agents": "agents/",
+    "commands": "commands/",
+    "hooks": "hooks/"
   },
-  "keywords": [
-    "security",
-    "code-quality",
-    "automation",
-    "git",
-    "documentation",
-    "refactoring",
-    "testing",
-    "deployment"
-  ]
+  "note": "This is a minimal development setup. For full plugin installation, use: ./install.sh --preset=developer /path/to/project"
 }

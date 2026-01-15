@@ -1,0 +1,23 @@
+{
+  "name": "ltk-engineering",
+  "version": "1.0.0",
+  "description": "Software development, testing, architecture patterns, and code quality for Claude Code",
+  "author": "LTK",
+  "dependencies": ["ltk-core"],
+  "components": {
+    "skills": "skills/",
+    "agents": "agents/",
+    "commands": "commands/",
+    "hooks": "hooks/"
+  },
+  "keywords": [
+    "python",
+    "javascript",
+    "typescript",
+    "testing",
+    "architecture",
+    "patterns",
+    "code-quality",
+    "refactoring"
+  ]
+}
