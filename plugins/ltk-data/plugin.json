@@ -1,0 +1,22 @@
+{
+  "name": "ltk-data",
+  "version": "1.0.0",
+  "description": "Data processing, databases, SQL optimization, and data pipelines for Claude Code",
+  "author": "LTK",
+  "dependencies": ["ltk-core"],
+  "components": {
+    "skills": "skills/",
+    "agents": "agents/",
+    "commands": "commands/",
+    "hooks": "hooks/"
+  },
+  "keywords": [
+    "sql",
+    "databases",
+    "data-pipelines",
+    "analytics",
+    "data-processing",
+    "etl",
+    "data-quality"
+  ]
+}

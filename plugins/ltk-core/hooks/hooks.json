@@ -1,0 +1,10 @@
+{
+  "hooks": [
+    {
+      "event": "Stop",
+      "type": "command",
+      "command": "./hooks/ralph-stop-hook.sh",
+      "timeout": 10000
+    }
+  ]
+}
