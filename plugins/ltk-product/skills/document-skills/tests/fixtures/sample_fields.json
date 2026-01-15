@@ -1,0 +1,16 @@
+{
+  "form_fields": [
+    {
+      "description": "Name",
+      "page_number": 1,
+      "label_bounding_box": [10, 10, 50, 30],
+      "entry_bounding_box": [60, 10, 150, 30]
+    },
+    {
+      "description": "Email",
+      "page_number": 1,
+      "label_bounding_box": [10, 40, 50, 60],
+      "entry_bounding_box": [60, 40, 150, 60]
+    }
+  ]
+}
