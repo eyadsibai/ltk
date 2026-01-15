@@ -4,8 +4,6 @@ description: Use when "scikit-learn", "sklearn", "machine learning", "classifica
 version: 1.0.0
 ---
 
-<!-- Adapted from: claude-scientific-skills/scientific-skills/scikit-learn -->
-
 # Scikit-learn Machine Learning
 
 Industry-standard Python library for classical machine learning.
@@ -19,155 +17,128 @@ Industry-standard Python library for classical machine learning.
 - Hyperparameter tuning
 - Building ML pipelines
 
-## Quick Start
+---
 
-```bash
-pip install scikit-learn
-```
-
-### Classification Example
-
-```python
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import classification_report
-
-# Split data
-X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.2, stratify=y, random_state=42
-)
-
-# Preprocess
-scaler = StandardScaler()
-X_train_scaled = scaler.fit_transform(X_train)
-X_test_scaled = scaler.transform(X_test)
-
-# Train
-model = RandomForestClassifier(n_estimators=100, random_state=42)
-model.fit(X_train_scaled, y_train)
-
-# Evaluate
-y_pred = model.predict(X_test_scaled)
-print(classification_report(y_test, y_pred))
-```
-
-## Common Algorithms
+## Algorithm Selection
 
 ### Classification
 
-```python
-from sklearn.linear_model import LogisticRegression
-from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
-from sklearn.svm import SVC
-from sklearn.neighbors import KNeighborsClassifier
-```
+| Algorithm | Best For | Strengths |
+|-----------|----------|-----------|
+| **Logistic Regression** | Baseline, interpretable | Fast, probabilistic |
+| **Random Forest** | General purpose | Handles non-linear, feature importance |
+| **Gradient Boosting** | Best accuracy | State-of-art for tabular |
+| **SVM** | High-dimensional data | Works well with few samples |
+| **KNN** | Simple problems | No training, instance-based |
 
 ### Regression
 
-```python
-from sklearn.linear_model import LinearRegression, Ridge, Lasso
-from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
-from sklearn.svm import SVR
-```
+| Algorithm | Best For | Notes |
+|-----------|----------|-------|
+| **Linear Regression** | Baseline | Interpretable coefficients |
+| **Ridge/Lasso** | Regularization needed | L2 vs L1 penalty |
+| **Random Forest** | Non-linear relationships | Robust to outliers |
+| **Gradient Boosting** | Best accuracy | XGBoost, LightGBM wrappers |
 
 ### Clustering
 
-```python
-from sklearn.cluster import KMeans, DBSCAN, AgglomerativeClustering
-from sklearn.mixture import GaussianMixture
-```
+| Algorithm | Best For | Key Parameter |
+|-----------|----------|---------------|
+| **KMeans** | Spherical clusters | n_clusters (must specify) |
+| **DBSCAN** | Arbitrary shapes | eps (density) |
+| **Agglomerative** | Hierarchical | n_clusters or distance threshold |
+| **Gaussian Mixture** | Soft clustering | n_components |
 
 ### Dimensionality Reduction
 
-```python
-from sklearn.decomposition import PCA, TruncatedSVD
-from sklearn.manifold import TSNE
-```
+| Method | Preserves | Use Case |
+|--------|-----------|----------|
+| **PCA** | Global variance | Feature reduction |
+| **t-SNE** | Local structure | 2D/3D visualization |
+| **UMAP** | Both local/global | Visualization + downstream |
 
-## Pipelines
+---
 
-```python
-from sklearn.pipeline import Pipeline
-from sklearn.compose import ColumnTransformer
-from sklearn.preprocessing import StandardScaler, OneHotEncoder
-from sklearn.impute import SimpleImputer
+## Pipeline Concepts
 
-# Define feature types
-numeric_features = ['age', 'income']
-categorical_features = ['gender', 'occupation']
+**Key concept**: Pipelines prevent data leakage by ensuring transformations are fit only on training data.
 
-# Create preprocessing
-numeric_transformer = Pipeline([
-    ('imputer', SimpleImputer(strategy='median')),
-    ('scaler', StandardScaler())
-])
+| Component | Purpose |
+|-----------|---------|
+| **Pipeline** | Sequential steps (transform → model) |
+| **ColumnTransformer** | Apply different transforms to different columns |
+| **FeatureUnion** | Combine multiple feature extraction methods |
 
-categorical_transformer = Pipeline([
-    ('imputer', SimpleImputer(strategy='most_frequent')),
-    ('onehot', OneHotEncoder(handle_unknown='ignore'))
-])
+**Common preprocessing flow**:
 
-preprocessor = ColumnTransformer([
-    ('num', numeric_transformer, numeric_features),
-    ('cat', categorical_transformer, categorical_features)
-])
+1. Impute missing values (SimpleImputer)
+2. Scale numeric features (StandardScaler, MinMaxScaler)
+3. Encode categoricals (OneHotEncoder, OrdinalEncoder)
+4. Optional: feature selection or polynomial features
 
-# Full pipeline
-pipeline = Pipeline([
-    ('preprocessor', preprocessor),
-    ('classifier', RandomForestClassifier())
-])
+---
 
-pipeline.fit(X_train, y_train)
-```
+## Model Evaluation
 
-## Cross-Validation
+### Cross-Validation Strategies
 
-```python
-from sklearn.model_selection import cross_val_score, GridSearchCV
+| Strategy | Use Case |
+|----------|----------|
+| **KFold** | General purpose |
+| **StratifiedKFold** | Imbalanced classification |
+| **TimeSeriesSplit** | Temporal data |
+| **LeaveOneOut** | Very small datasets |
 
-# Simple CV
-scores = cross_val_score(model, X, y, cv=5, scoring='accuracy')
-print(f"Mean: {scores.mean():.3f} (+/- {scores.std()*2:.3f})")
+### Metrics
 
-# Grid search
-param_grid = {
-    'n_estimators': [50, 100, 200],
-    'max_depth': [None, 10, 20]
-}
-grid_search = GridSearchCV(RandomForestClassifier(), param_grid, cv=5)
-grid_search.fit(X_train, y_train)
-print(f"Best params: {grid_search.best_params_}")
-```
+| Task | Metric | When to Use |
+|------|--------|-------------|
+| **Classification** | Accuracy | Balanced classes |
+| | F1-score | Imbalanced classes |
+| | ROC-AUC | Ranking, threshold tuning |
+| | Precision/Recall | Domain-specific costs |
+| **Regression** | RMSE | Penalize large errors |
+| | MAE | Robust to outliers |
+| | R² | Explained variance |
 
-## Metrics
+---
 
-```python
-from sklearn.metrics import (
-    accuracy_score, precision_score, recall_score, f1_score,
-    confusion_matrix, roc_auc_score, mean_squared_error, r2_score
-)
+## Hyperparameter Tuning
 
-# Classification
-print(f"Accuracy: {accuracy_score(y_test, y_pred):.3f}")
-print(f"F1: {f1_score(y_test, y_pred, average='weighted'):.3f}")
+| Method | Pros | Cons |
+|--------|------|------|
+| **GridSearchCV** | Exhaustive | Slow for many params |
+| **RandomizedSearchCV** | Faster | May miss optimal |
+| **HalvingGridSearchCV** | Efficient | Requires sklearn 0.24+ |
 
-# Regression
-print(f"RMSE: {mean_squared_error(y_test, y_pred, squared=False):.3f}")
-print(f"R2: {r2_score(y_test, y_pred):.3f}")
-```
+**Key concept**: Always tune on validation set, evaluate final model on held-out test set.
+
+---
 
 ## Best Practices
 
-1. **Always split data** before any preprocessing
-2. **Use pipelines** to prevent data leakage
-3. **Scale features** for distance-based algorithms
-4. **Use stratified splits** for imbalanced classes
-5. **Cross-validate** for reliable estimates
+| Practice | Why |
+|----------|-----|
+| Split data first | Prevent leakage |
+| Use pipelines | Reproducible, no leakage |
+| Scale for distance-based | KNN, SVM, PCA need scaled features |
+| Stratify imbalanced | Preserve class distribution |
+| Cross-validate | Reliable performance estimates |
+| Check learning curves | Diagnose over/underfitting |
+
+---
+
+## Common Pitfalls
+
+| Pitfall | Solution |
+|---------|----------|
+| Fitting scaler on all data | Use pipeline or fit only on train |
+| Using accuracy for imbalanced | Use F1, ROC-AUC, or balanced accuracy |
+| Too many hyperparameters | Start simple, add complexity |
+| Ignoring feature importance | Use `feature_importances_` or permutation importance |
 
 ## Resources
 
 - Docs: <https://scikit-learn.org/>
 - User Guide: <https://scikit-learn.org/stable/user_guide.html>
-- Examples: <https://scikit-learn.org/stable/auto_examples/>
+- Algorithm Cheat Sheet: <https://scikit-learn.org/stable/tutorial/machine_learning_map/>

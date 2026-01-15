@@ -8,196 +8,162 @@ version: 1.0.0
 
 Guidance for building APIs with FastAPI following best practices.
 
-## Basic Structure
+---
 
-```python
-from fastapi import FastAPI, HTTPException, Depends
-from pydantic import BaseModel
+## Core Concepts
 
-app = FastAPI(
-    title="My API",
-    description="API description",
-    version="1.0.0",
-)
+### Route Decorators
 
-class ItemCreate(BaseModel):
-    name: str
-    price: float
+| Decorator | HTTP Method | Use Case |
+|-----------|-------------|----------|
+| `@app.get()` | GET | Retrieve data |
+| `@app.post()` | POST | Create resource |
+| `@app.put()` | PUT | Full update |
+| `@app.patch()` | PATCH | Partial update |
+| `@app.delete()` | DELETE | Remove resource |
 
-class Item(ItemCreate):
-    id: int
+### Response Status Codes
 
-    class Config:
-        from_attributes = True
+| Code | Meaning | When to Use |
+|------|---------|-------------|
+| **200** | OK | Successful GET/PUT/PATCH |
+| **201** | Created | Successful POST |
+| **204** | No Content | Successful DELETE |
+| **400** | Bad Request | Invalid input |
+| **401** | Unauthorized | Authentication required |
+| **403** | Forbidden | No permission |
+| **404** | Not Found | Resource doesn't exist |
+| **422** | Unprocessable | Validation failed |
 
-@app.post("/items", response_model=Item, status_code=201)
-async def create_item(item: ItemCreate):
-    return Item(id=1, **item.model_dump())
-```
+---
 
 ## Dependency Injection
 
-```python
-from fastapi import Depends
-from typing import Annotated
+**Key concept**: Dependencies are functions that FastAPI calls before your route handler. Use `yield` for cleanup logic.
 
-async def get_db():
-    db = Database()
-    try:
-        yield db
-    finally:
-        await db.close()
+| Pattern | Use Case |
+|---------|----------|
+| **Simple function** | Get config, compute values |
+| **Generator (yield)** | Database sessions, connections |
+| **Class-based** | Complex dependencies with state |
+| **Nested dependencies** | Dependencies that depend on other dependencies |
 
-async def get_current_user(
-    token: Annotated[str, Depends(oauth2_scheme)],
-    db: Annotated[Database, Depends(get_db)],
-) -> User:
-    user = await db.get_user_by_token(token)
-    if not user:
-        raise HTTPException(status_code=401)
-    return user
+### Common Dependencies
 
-# Type alias for reuse
-CurrentUser = Annotated[User, Depends(get_current_user)]
+| Dependency | Purpose |
+|------------|---------|
+| **get_db** | Database session (yield for cleanup) |
+| **get_current_user** | Authentication + user retrieval |
+| **get_settings** | Configuration singleton |
+| **rate_limiter** | Request throttling |
 
-@app.get("/me")
-async def get_me(user: CurrentUser):
-    return user
-```
+**Key concept**: Use `Annotated[Type, Depends(func)]` for cleaner type hints and reusability.
 
-## Request Validation
+---
 
-```python
-from pydantic import BaseModel, Field, field_validator
+## Pydantic Models
 
-class UserCreate(BaseModel):
-    email: str = Field(..., pattern=r"^[\w\.-]+@[\w\.-]+\.\w+$")
-    password: str = Field(..., min_length=8)
-    age: int = Field(..., ge=0, le=150)
+### Model Patterns
 
-    @field_validator("email")
-    @classmethod
-    def email_lowercase(cls, v: str) -> str:
-        return v.lower()
-```
+| Pattern | Purpose |
+|---------|---------|
+| **Base model** | Shared fields |
+| **Create model** | Input for POST (no id) |
+| **Update model** | Partial updates (all Optional) |
+| **Response model** | Output (includes id, timestamps) |
+| **DB model** | Internal with `from_attributes = True` |
+
+### Validation Features
+
+| Feature | Purpose |
+|---------|---------|
+| **Field(...)** | Required with constraints |
+| **Field(default=...)** | Optional with default |
+| **field_validator** | Custom validation logic |
+| **model_validator** | Cross-field validation |
+| **pattern=** | Regex validation |
+| **ge=, le=** | Numeric bounds |
+| **min_length=, max_length=** | String/list length |
+
+---
 
 ## Error Handling
 
-```python
-from fastapi import HTTPException
-from fastapi.responses import JSONResponse
+| Approach | Use Case |
+|----------|----------|
+| **HTTPException** | Simple errors with status code |
+| **Custom exception class** | Structured error responses |
+| **@app.exception_handler** | Global error handling |
+| **RequestValidationError** | Customize validation errors |
 
-class AppException(Exception):
-    def __init__(self, code: str, message: str, status: int = 400):
-        self.code = code
-        self.message = message
-        self.status = status
+**Key concept**: Create custom exception classes for consistent error response format across your API.
 
-@app.exception_handler(AppException)
-async def app_exception_handler(request, exc: AppException):
-    return JSONResponse(
-        status_code=exc.status,
-        content={"code": exc.code, "message": exc.message},
-    )
-
-# Usage
-raise AppException("USER_NOT_FOUND", "User does not exist", 404)
-```
+---
 
 ## Router Organization
 
-```python
-# routers/users.py
-from fastapi import APIRouter
+| Concept | Purpose |
+|---------|---------|
+| **APIRouter** | Group related endpoints |
+| **prefix** | URL prefix for all routes |
+| **tags** | OpenAPI documentation grouping |
+| **dependencies** | Router-level dependencies |
 
-router = APIRouter(prefix="/users", tags=["users"])
+### Project Structure
 
-@router.get("/")
-async def list_users():
-    ...
+| Directory | Contents |
+|-----------|----------|
+| **routers/** | Route handlers by domain |
+| **models/** | SQLAlchemy/database models |
+| **schemas/** | Pydantic request/response models |
+| **services/** | Business logic |
+| **dependencies.py** | Shared dependencies |
+| **config.py** | Settings and configuration |
 
-@router.get("/{user_id}")
-async def get_user(user_id: int):
-    ...
-
-# main.py
-from routers import users, items
-
-app.include_router(users.router)
-app.include_router(items.router)
-```
+---
 
 ## Background Tasks
 
-```python
-from fastapi import BackgroundTasks
+| Method | Use Case |
+|--------|----------|
+| **BackgroundTasks** | Simple async tasks (email, logging) |
+| **Celery** | Heavy tasks, retries, scheduling |
+| **ARQ** | Async Redis queue |
 
-def send_email(email: str, message: str):
-    # Slow operation
-    ...
+**Key concept**: BackgroundTasks run after response is sent—good for non-critical operations that shouldn't block the response.
 
-@app.post("/notify")
-async def notify(
-    email: str,
-    background_tasks: BackgroundTasks,
-):
-    background_tasks.add_task(send_email, email, "Hello!")
-    return {"status": "queued"}
-```
+---
 
-## Testing
+## Testing Patterns
 
-```python
-from fastapi.testclient import TestClient
-import pytest
+| Client | Use Case |
+|--------|----------|
+| **TestClient** | Sync tests (most common) |
+| **AsyncClient (httpx)** | Async tests, lifespan events |
 
-@pytest.fixture
-def client():
-    return TestClient(app)
+### Dependency Override Pattern
 
-def test_create_item(client):
-    response = client.post("/items", json={"name": "Test", "price": 9.99})
-    assert response.status_code == 201
-    assert response.json()["name"] == "Test"
+1. Create test version of dependency
+2. Set `app.dependency_overrides[original] = test_version`
+3. Run tests
+4. Clear overrides after
 
-# Async tests
-import pytest_asyncio
-from httpx import AsyncClient
+**Key concept**: Override `get_db` for test database, `get_current_user` for auth bypass.
 
-@pytest_asyncio.fixture
-async def async_client():
-    async with AsyncClient(app=app, base_url="http://test") as client:
-        yield client
+---
 
-@pytest.mark.asyncio
-async def test_async_endpoint(async_client):
-    response = await async_client.get("/")
-    assert response.status_code == 200
-```
+## Best Practices
 
-## Project Structure
+| Practice | Why |
+|----------|-----|
+| Use response_model | Control output, hide internal fields |
+| Use dependency injection | Testable, reusable code |
+| Separate schemas from DB models | Decouple API from database |
+| Use routers for organization | Maintainable as API grows |
+| Add OpenAPI descriptions | Self-documenting API |
+| Use async for I/O | Better concurrency |
 
-```
-my_api/
-├── src/
-│   └── my_api/
-│       ├── __init__.py
-│       ├── main.py
-│       ├── config.py
-│       ├── dependencies.py
-│       ├── routers/
-│       │   ├── __init__.py
-│       │   ├── users.py
-│       │   └── items.py
-│       ├── models/
-│       │   ├── __init__.py
-│       │   └── user.py
-│       ├── schemas/
-│       │   ├── __init__.py
-│       │   └── user.py
-│       └── services/
-│           └── user_service.py
-├── tests/
-├── pyproject.toml
-└── Dockerfile
-```
+## Resources
+
+- Docs: <https://fastapi.tiangolo.com/>
+- Tutorial: <https://fastapi.tiangolo.com/tutorial/>

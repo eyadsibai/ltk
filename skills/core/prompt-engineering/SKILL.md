@@ -4,8 +4,6 @@ description: Use when "writing prompts", "prompt optimization", "few-shot learni
 version: 1.0.0
 ---
 
-<!-- Adapted from: claude-skills/engineering-team/senior-prompt-engineer -->
-
 # Prompt Engineering Guide
 
 Effective prompts, RAG systems, and agent workflows.
@@ -18,226 +16,167 @@ Effective prompts, RAG systems, and agent workflows.
 - Creating few-shot examples
 - Structuring chain-of-thought reasoning
 
-## Prompt Patterns
+---
 
-### Basic Structure
+## Prompt Structure
 
-```
-[Role/Context]
-You are an expert {domain} assistant.
+### Core Components
 
-[Task]
-{Clear instruction of what to do}
+| Component | Purpose | Include When |
+|-----------|---------|--------------|
+| **Role/Context** | Set expertise, persona | Complex domain tasks |
+| **Task** | Clear instruction | Always |
+| **Format** | Output structure | Need structured output |
+| **Examples** | Few-shot learning | Pattern demonstration needed |
+| **Constraints** | Boundaries, rules | Need to limit scope |
 
-[Format]
-Respond in {format specification}.
+### Prompt Patterns
 
-[Examples] (optional)
-Example input: {input}
-Example output: {output}
+| Pattern | Use Case | Key Concept |
+|---------|----------|-------------|
+| **Chain of Thought** | Complex reasoning | "Think step by step" |
+| **Few-Shot** | Pattern learning | 2-5 input/output examples |
+| **Role Playing** | Domain expertise | "You are an expert X" |
+| **Structured Output** | Parsing needed | Specify JSON/format exactly |
+| **Self-Consistency** | Improve accuracy | Generate multiple, vote |
 
-[Constraints]
-- {Constraint 1}
-- {Constraint 2}
-```
+---
 
-### Chain of Thought
+## Chain of Thought Variants
 
-```
-Solve this step by step:
+| Variant | Description | When to Use |
+|---------|-------------|-------------|
+| **Standard CoT** | "Think step by step" | Math, logic problems |
+| **Zero-Shot CoT** | Just add "step by step" | Quick reasoning boost |
+| **Structured CoT** | Numbered steps | Complex multi-step |
+| **Self-Ask** | Ask sub-questions | Research-style tasks |
+| **Tree of Thought** | Explore multiple paths | Creative/open problems |
 
-1. First, identify the key elements
-2. Then, analyze the relationships
-3. Finally, provide your conclusion
+**Key concept**: CoT works because it forces the model to show intermediate reasoning, reducing errors in the final answer.
 
-Show your reasoning for each step.
-```
+---
 
-### Few-Shot Learning
+## Few-Shot Learning
 
-```
-Here are examples of the task:
+### Example Selection
 
-Input: "The movie was absolutely terrible"
-Output: {"sentiment": "negative", "confidence": 0.95}
+| Criteria | Why |
+|----------|-----|
+| **Representative** | Cover common cases |
+| **Diverse** | Show range of inputs |
+| **Edge cases** | Handle boundaries |
+| **Consistent format** | Teach output pattern |
 
-Input: "I loved every minute of it"
-Output: {"sentiment": "positive", "confidence": 0.92}
+### Number of Examples
 
-Now analyze this:
-Input: "{user_input}"
-Output:
-```
+| Count | Trade-off |
+|-------|-----------|
+| 0 (zero-shot) | Less context, more creative |
+| 2-3 | Good balance for most tasks |
+| 5+ | Complex patterns, use tokens |
+
+**Key concept**: Examples teach format more than content. The model learns "how" to respond, not "what" facts to include.
+
+---
 
 ## RAG System Design
 
-### Architecture
+### Architecture Flow
 
-```
-Query → Embedding → Vector Search → Context Retrieval → LLM → Response
-```
-
-### Implementation
-
-```python
-from langchain.embeddings import OpenAIEmbeddings
-from langchain.vectorstores import Chroma
-from langchain.chains import RetrievalQA
-
-# Create vector store
-embeddings = OpenAIEmbeddings()
-vectorstore = Chroma.from_documents(docs, embeddings)
-
-# Create RAG chain
-qa = RetrievalQA.from_chain_type(
-    llm=llm,
-    chain_type="stuff",
-    retriever=vectorstore.as_retriever(k=3)
-)
-
-# Query
-response = qa.run("What is the refund policy?")
-```
+Query → Embed → Search → Retrieve → Augment Prompt → Generate
 
 ### Chunking Strategies
 
-| Strategy | Best For |
-|----------|----------|
-| Fixed size (512 tokens) | General documents |
-| Sentence-based | Precise retrieval |
-| Paragraph-based | Context preservation |
-| Semantic chunking | Mixed content types |
+| Strategy | Best For | Trade-off |
+|----------|----------|-----------|
+| **Fixed size** | General documents | May split sentences |
+| **Sentence-based** | Precise retrieval | Many small chunks |
+| **Paragraph-based** | Context preservation | May be too large |
+| **Semantic** | Mixed content | More complex |
+
+### Retrieval Quality Factors
+
+| Factor | Impact |
+|--------|--------|
+| **Chunk size** | Too small = no context, too large = noise |
+| **Overlap** | Prevents splitting important content |
+| **Metadata filtering** | Narrows search space |
+| **Re-ranking** | Improves relevance of top-k |
+| **Hybrid search** | Combines keyword + semantic |
+
+**Key concept**: RAG quality depends more on retrieval quality than generation quality. Fix retrieval first.
+
+---
 
 ## Agent Patterns
 
 ### ReAct Pattern
 
-```
-Thought: I need to find the user's order history
-Action: search_orders(user_id="123")
-Observation: Found 3 orders: [...]
-Thought: Now I can answer the question
-Action: respond("Your recent orders are...")
-```
+| Step | Description |
+|------|-------------|
+| **Thought** | Reason about what to do |
+| **Action** | Call a tool |
+| **Observation** | Process tool result |
+| **Repeat** | Until task complete |
 
-### Tool Calling
+### Tool Design Principles
 
-```python
-tools = [
-    {
-        "name": "search_database",
-        "description": "Search the product database",
-        "parameters": {
-            "query": {"type": "string"},
-            "limit": {"type": "integer", "default": 10}
-        }
-    }
-]
+| Principle | Why |
+|-----------|-----|
+| **Single purpose** | Clear when to use |
+| **Good descriptions** | Model selects correctly |
+| **Structured inputs** | Reliable parsing |
+| **Informative outputs** | Model understands result |
+| **Error messages** | Guide retry attempts |
 
-response = client.chat.completions.create(
-    model="gpt-4",
-    messages=messages,
-    tools=tools,
-    tool_choice="auto"
-)
-```
+---
 
-## Optimization Techniques
+## Prompt Optimization
 
 ### Token Efficiency
 
-- Remove redundant instructions
-- Use abbreviations in examples
-- Compress context with summaries
-- Cache common prompts
+| Technique | Savings |
+|-----------|---------|
+| Remove redundant instructions | 10-30% |
+| Use abbreviations in examples | 10-20% |
+| Compress context with summaries | 50%+ |
+| Remove verbose explanations | 20-40% |
 
 ### Quality Improvement
 
-- Add specific examples
-- Use structured output formats
-- Include edge case handling
-- Add confidence scoring
+| Technique | Effect |
+|-----------|--------|
+| Add specific examples | Reduces errors |
+| Specify output format | Enables parsing |
+| Include edge cases | Handles boundaries |
+| Add confidence scoring | Calibrates uncertainty |
 
-### Testing Framework
+---
 
-```python
-def evaluate_prompt(prompt_template, test_cases):
-    """Evaluate prompt against test cases."""
-    results = []
-    for case in test_cases:
-        response = llm(prompt_template.format(**case['input']))
-        score = evaluate_response(response, case['expected'])
-        results.append({
-            'input': case['input'],
-            'expected': case['expected'],
-            'actual': response,
-            'score': score
-        })
-    return results
-```
+## Common Task Patterns
+
+| Task | Key Prompt Elements |
+|------|---------------------|
+| **Extraction** | List fields, specify format (JSON), handle missing |
+| **Classification** | List categories, one-shot per category, single answer |
+| **Summarization** | Specify length, focus areas, format (bullets/prose) |
+| **Generation** | Style guide, length, constraints, examples |
+| **Q&A** | Context placement, "based only on context" |
+
+---
 
 ## Best Practices
 
-### Prompt Design
+| Practice | Why |
+|----------|-----|
+| Be specific and explicit | Reduces ambiguity |
+| Provide clear examples | Shows expected format |
+| Specify output format | Enables parsing |
+| Test with diverse inputs | Find edge cases |
+| Iterate based on failures | Targeted improvement |
+| Separate instructions from data | Prevent injection |
 
-- Be specific and explicit
-- Provide clear examples
-- Specify output format
-- Handle edge cases
-- Test with diverse inputs
+## Resources
 
-### RAG Systems
-
-- Choose appropriate chunk sizes
-- Use metadata filtering
-- Implement re-ranking
-- Monitor retrieval quality
-- Handle no-results gracefully
-
-### Agent Design
-
-- Define clear tool boundaries
-- Implement fallbacks
-- Log all actions
-- Set iteration limits
-- Handle errors gracefully
-
-## Common Patterns
-
-### Extraction
-
-```
-Extract the following from the text:
-- Names (list of strings)
-- Dates (ISO format)
-- Amounts (numbers with currency)
-
-Text: {input}
-
-Output as JSON.
-```
-
-### Classification
-
-```
-Classify the following into one of these categories:
-- Technical Support
-- Billing
-- General Inquiry
-- Complaint
-
-Message: {input}
-
-Respond with just the category name.
-```
-
-### Summarization
-
-```
-Summarize the following in 3 bullet points:
-- Focus on key decisions
-- Include action items
-- Note any deadlines
-
-Text: {input}
-```
+- Anthropic Prompt Engineering: <https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering>
+- OpenAI Cookbook: <https://cookbook.openai.com/>

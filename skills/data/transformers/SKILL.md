@@ -4,8 +4,6 @@ description: Use when "HuggingFace Transformers", "pre-trained models", "pipelin
 version: 1.0.0
 ---
 
-<!-- Adapted from: claude-scientific-skills/scientific-skills/transformers -->
-
 # HuggingFace Transformers
 
 Access thousands of pre-trained models for NLP, vision, audio, and multimodal tasks.
@@ -18,183 +16,141 @@ Access thousands of pre-trained models for NLP, vision, audio, and multimodal ta
 - Fine-tuning on custom datasets
 - Loading pre-trained models from HuggingFace Hub
 
-## Quick Start
-
-```bash
-pip install torch transformers datasets
-```
-
-```python
-from transformers import pipeline
-
-# Text generation
-generator = pipeline("text-generation", model="gpt2")
-result = generator("The future of AI is", max_length=50)
-
-# Text classification
-classifier = pipeline("text-classification")
-result = classifier("This movie was excellent!")
-
-# Question answering
-qa = pipeline("question-answering")
-result = qa(question="What is AI?", context="AI is artificial intelligence...")
-```
+---
 
 ## Pipeline Tasks
 
-```python
-# NLP tasks
-pipeline("text-generation")        # Generate text
-pipeline("text-classification")    # Sentiment, etc.
-pipeline("question-answering")     # Extract answers
-pipeline("summarization")          # Summarize text
-pipeline("translation_en_to_fr")   # Translate
-pipeline("ner")                    # Named entity recognition
-pipeline("fill-mask")              # Predict masked words
+### NLP Tasks
 
-# Vision tasks
-pipeline("image-classification")
-pipeline("object-detection")
+| Task | Pipeline Name | Output |
+|------|---------------|--------|
+| **Text Generation** | `text-generation` | Completed text |
+| **Classification** | `text-classification` | Label + confidence |
+| **Question Answering** | `question-answering` | Answer span |
+| **Summarization** | `summarization` | Shorter text |
+| **Translation** | `translation_en_to_fr` | Translated text |
+| **NER** | `ner` | Entity spans + types |
+| **Fill Mask** | `fill-mask` | Predicted tokens |
 
-# Audio tasks
-pipeline("automatic-speech-recognition")
-pipeline("audio-classification")
-```
+### Vision Tasks
 
-## Custom Model Usage
+| Task | Pipeline Name | Output |
+|------|---------------|--------|
+| **Image Classification** | `image-classification` | Label + confidence |
+| **Object Detection** | `object-detection` | Bounding boxes |
+| **Image Segmentation** | `image-segmentation` | Pixel masks |
 
-```python
-from transformers import AutoModelForCausalLM, AutoTokenizer
+### Audio Tasks
 
-tokenizer = AutoTokenizer.from_pretrained("gpt2")
-model = AutoModelForCausalLM.from_pretrained("gpt2")
+| Task | Pipeline Name | Output |
+|------|---------------|--------|
+| **Speech Recognition** | `automatic-speech-recognition` | Transcribed text |
+| **Audio Classification** | `audio-classification` | Label + confidence |
 
-inputs = tokenizer("Hello, I am", return_tensors="pt")
-outputs = model.generate(**inputs, max_new_tokens=50)
-text = tokenizer.decode(outputs[0])
-```
+---
 
-## Device Placement
+## Model Loading Patterns
 
-```python
-# Auto device mapping (GPU if available)
-model = AutoModelForCausalLM.from_pretrained(
-    "meta-llama/Llama-2-7b-hf",
-    device_map="auto",
-    torch_dtype="auto"
-)
+### Auto Classes
 
-# Specific device
-model = AutoModelForCausalLM.from_pretrained("gpt2").to("cuda")
-```
+| Class | Use Case |
+|-------|----------|
+| **AutoModel** | Base model (embeddings) |
+| **AutoModelForCausalLM** | Text generation (GPT-style) |
+| **AutoModelForSeq2SeqLM** | Encoder-decoder (T5, BART) |
+| **AutoModelForSequenceClassification** | Classification head |
+| **AutoModelForTokenClassification** | NER, POS tagging |
+| **AutoModelForQuestionAnswering** | Extractive QA |
+
+**Key concept**: Always use Auto classes unless you need a specific architecture—they handle model detection automatically.
+
+---
 
 ## Generation Parameters
 
-```python
-outputs = model.generate(
-    inputs["input_ids"],
-    max_new_tokens=100,
-    temperature=0.7,      # Randomness (0=deterministic, 1=random)
-    top_p=0.9,            # Nucleus sampling
-    top_k=50,             # Top-k sampling
-    do_sample=True,       # Enable sampling
-    num_beams=4,          # Beam search (set do_sample=False)
-    repetition_penalty=1.2
-)
-```
+| Parameter | Effect | Typical Values |
+|-----------|--------|----------------|
+| **max_new_tokens** | Output length | 50-500 |
+| **temperature** | Randomness (0=deterministic) | 0.1-1.0 |
+| **top_p** | Nucleus sampling threshold | 0.9-0.95 |
+| **top_k** | Limit vocabulary per step | 50 |
+| **num_beams** | Beam search (disable sampling) | 4-8 |
+| **repetition_penalty** | Discourage repetition | 1.1-1.3 |
 
-## Fine-Tuning with Trainer
+**Key concept**: Higher temperature = more creative but less coherent. For factual tasks, use low temperature (0.1-0.3).
 
-```python
-from transformers import Trainer, TrainingArguments, AutoModelForSequenceClassification
+---
 
-model = AutoModelForSequenceClassification.from_pretrained("bert-base-uncased", num_labels=2)
+## Memory Management
 
-training_args = TrainingArguments(
-    output_dir="./results",
-    num_train_epochs=3,
-    per_device_train_batch_size=8,
-    per_device_eval_batch_size=8,
-    learning_rate=2e-5,
-    weight_decay=0.01,
-    evaluation_strategy="epoch",
-    save_strategy="epoch",
-    load_best_model_at_end=True,
-)
+### Device Placement Options
 
-trainer = Trainer(
-    model=model,
-    args=training_args,
-    train_dataset=train_dataset,
-    eval_dataset=eval_dataset,
-)
+| Option | When to Use |
+|--------|-------------|
+| **device_map="auto"** | Let library decide GPU allocation |
+| **device_map="cuda:0"** | Specific GPU |
+| **device_map="cpu"** | CPU only |
 
-trainer.train()
-trainer.save_model("./my-model")
-```
+### Quantization Options
 
-## Tokenization
+| Method | Memory Reduction | Quality Impact |
+|--------|------------------|----------------|
+| **8-bit** | ~50% | Minimal |
+| **4-bit** | ~75% | Small for most tasks |
+| **GPTQ** | ~75% | Requires calibration |
+| **AWQ** | ~75% | Activation-aware |
 
-```python
-from transformers import AutoTokenizer
+**Key concept**: Use `torch_dtype="auto"` to automatically use the model's native precision (often bfloat16).
 
-tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased")
+---
 
-# Single text
-encoded = tokenizer("Hello world", return_tensors="pt")
-# encoded.input_ids, encoded.attention_mask
+## Fine-Tuning Concepts
 
-# Batch with padding
-encoded = tokenizer(
-    ["Hello", "Hello world"],
-    padding=True,
-    truncation=True,
-    max_length=512,
-    return_tensors="pt"
-)
-```
+### Trainer Arguments
 
-## Save and Load
+| Argument | Purpose | Typical Value |
+|----------|---------|---------------|
+| **num_train_epochs** | Training passes | 3-5 |
+| **per_device_train_batch_size** | Samples per GPU | 8-32 |
+| **learning_rate** | Step size | 2e-5 for fine-tuning |
+| **weight_decay** | Regularization | 0.01 |
+| **warmup_ratio** | LR warmup | 0.1 |
+| **evaluation_strategy** | When to eval | "epoch" or "steps" |
 
-```python
-# Save locally
-model.save_pretrained("./my-model")
-tokenizer.save_pretrained("./my-model")
+### Fine-Tuning Strategies
 
-# Load locally
-model = AutoModel.from_pretrained("./my-model")
+| Strategy | Memory | Quality | Use Case |
+|----------|--------|---------|----------|
+| **Full fine-tuning** | High | Best | Small models, enough data |
+| **LoRA** | Low | Good | Large models, limited GPU |
+| **QLoRA** | Very Low | Good | 7B+ models on consumer GPU |
+| **Prefix tuning** | Low | Moderate | When you can't modify weights |
 
-# Push to Hub
-model.push_to_hub("my-username/my-model")
-tokenizer.push_to_hub("my-username/my-model")
-```
+---
 
-## Quantization
+## Tokenization Concepts
 
-```python
-from transformers import BitsAndBytesConfig
+| Parameter | Purpose |
+|-----------|---------|
+| **padding** | Make sequences same length |
+| **truncation** | Cut sequences to max_length |
+| **max_length** | Maximum tokens (model-specific) |
+| **return_tensors** | Output format ("pt", "tf", "np") |
 
-# 4-bit quantization
-bnb_config = BitsAndBytesConfig(
-    load_in_4bit=True,
-    bnb_4bit_compute_dtype="float16"
-)
+**Key concept**: Always use the tokenizer that matches the model—different models use different vocabularies.
 
-model = AutoModelForCausalLM.from_pretrained(
-    "meta-llama/Llama-2-7b-hf",
-    quantization_config=bnb_config,
-    device_map="auto"
-)
-```
+---
 
 ## Best Practices
 
-1. **Use pipelines** for quick inference
-2. **Use device_map="auto"** for automatic GPU placement
-3. **Use torch_dtype="auto"** for optimal precision
-4. **Batch inputs** for better throughput
-5. **Use quantization** for large models on limited GPU
-6. **Fine-tune with Trainer** for best practices built-in
+| Practice | Why |
+|----------|-----|
+| Use pipelines for inference | Handles preprocessing automatically |
+| Use device_map="auto" | Optimal GPU memory distribution |
+| Batch inputs | Better throughput |
+| Use quantization for large models | Run 7B+ on consumer GPUs |
+| Match tokenizer to model | Vocabularies differ between models |
+| Use Trainer for fine-tuning | Built-in best practices |
 
 ## Resources
 

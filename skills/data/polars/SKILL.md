@@ -4,8 +4,6 @@ description: Use when "Polars", "fast dataframe", "lazy evaluation", "Arrow back
 version: 1.0.0
 ---
 
-<!-- Adapted from: claude-scientific-skills/scientific-skills/polars -->
-
 # Polars Fast DataFrame Library
 
 Lightning-fast DataFrame library with lazy evaluation and parallel execution.
@@ -18,112 +16,79 @@ Lightning-fast DataFrame library with lazy evaluation and parallel execution.
 - Building ETL pipelines
 - Want parallel execution without extra config
 
-## Quick Start
-
-```bash
-pip install polars
-```
-
-### Basic Usage
-
-```python
-import polars as pl
-
-# Create DataFrame
-df = pl.DataFrame({
-    "name": ["Alice", "Bob", "Charlie"],
-    "age": [25, 30, 35],
-    "city": ["NY", "LA", "SF"]
-})
-
-# Select columns
-df.select("name", "age")
-
-# Filter rows
-df.filter(pl.col("age") > 25)
-
-# Add computed columns
-df.with_columns(
-    age_plus_10=pl.col("age") + 10
-)
-```
+---
 
 ## Lazy vs Eager Evaluation
 
-### Eager (Immediate)
+| Mode | Function | Executes | Use Case |
+|------|----------|----------|----------|
+| **Eager** | `read_csv()` | Immediately | Small data, exploration |
+| **Lazy** | `scan_csv()` | On `.collect()` | Large data, pipelines |
 
-```python
-df = pl.read_csv("file.csv")  # Reads immediately
-result = df.filter(pl.col("age") > 25)  # Executes immediately
-```
+**Key concept**: Lazy mode builds a query plan that gets optimized before execution. The optimizer applies predicate pushdown (filter early) and projection pushdown (select columns early).
 
-### Lazy (Optimized)
+---
 
-```python
-lf = pl.scan_csv("file.csv")  # Doesn't read yet
-result = lf.filter(pl.col("age") > 25).select("name", "age")
-df = result.collect()  # Now executes optimized query
-```
+## Core Operations
 
-**Use lazy for:**
+### Data Selection
 
-- Large datasets
-- Complex query pipelines
-- When only some columns/rows needed
-- Performance-critical work
+| Operation | Purpose |
+|-----------|---------|
+| `select()` | Choose columns |
+| `filter()` | Choose rows by condition |
+| `with_columns()` | Add/modify columns |
+| `drop()` | Remove columns |
+| `head(n)` / `tail(n)` | First/last n rows |
 
-## Common Operations
+### Aggregation
 
-### GroupBy Aggregation
-
-```python
-df.group_by("city").agg(
-    pl.col("age").mean().alias("avg_age"),
-    pl.col("name").count().alias("count")
-)
-```
+| Operation | Purpose |
+|-----------|---------|
+| `group_by().agg()` | Group and aggregate |
+| `pivot()` | Reshape wide |
+| `melt()` | Reshape long |
+| `unique()` | Distinct values |
 
 ### Joins
 
-```python
-df1.join(df2, on="id", how="left")
-```
+| Join Type | Description |
+|-----------|-------------|
+| **inner** | Matching rows only |
+| **left** | All left + matching right |
+| **outer** | All rows from both |
+| **cross** | Cartesian product |
+| **semi** | Left rows with match |
+| **anti** | Left rows without match |
 
-### Window Functions
+---
 
-```python
-df.with_columns(
-    pl.col("value").rolling_mean(window_size=3).alias("rolling_avg")
-)
-```
+## Expression API
 
-### Read/Write
+**Key concept**: Polars uses expressions (`pl.col()`) instead of indexing. Expressions are lazily evaluated and optimized.
 
-```python
-# CSV
-df = pl.read_csv("data.csv")
-df.write_csv("output.csv")
+### Common Expressions
 
-# Parquet (faster)
-df = pl.read_parquet("data.parquet")
-df.write_parquet("output.parquet")
+| Expression | Purpose |
+|------------|---------|
+| `pl.col("name")` | Reference column |
+| `pl.lit(value)` | Literal value |
+| `pl.all()` | All columns |
+| `pl.exclude(...)` | All except |
 
-# Lazy scanning
-lf = pl.scan_csv("large_file.csv")
-lf = pl.scan_parquet("large_file.parquet")
-```
+### Expression Methods
+
+| Category | Methods |
+|----------|---------|
+| **Aggregation** | `.sum()`, `.mean()`, `.min()`, `.max()`, `.count()` |
+| **String** | `.str.contains()`, `.str.replace()`, `.str.to_lowercase()` |
+| **DateTime** | `.dt.year()`, `.dt.month()`, `.dt.day()` |
+| **Conditional** | `.when().then().otherwise()` |
+| **Window** | `.over()`, `.rolling_mean()`, `.shift()` |
+
+---
 
 ## Pandas Migration
-
-```python
-# Pandas to Polars
-pl_df = pl.from_pandas(pandas_df)
-
-# Polars to Pandas
-pandas_df = pl_df.to_pandas()
-```
-
-### Common Equivalents
 
 | Pandas | Polars |
 |--------|--------|
@@ -131,26 +96,51 @@ pandas_df = pl_df.to_pandas()
 | `df[df['col'] > 5]` | `df.filter(pl.col('col') > 5)` |
 | `df['new'] = df['col'] * 2` | `df.with_columns((pl.col('col') * 2).alias('new'))` |
 | `df.groupby('col').mean()` | `df.group_by('col').agg(pl.all().mean())` |
+| `df.apply(func)` | `df.map_rows(func)` (avoid if possible) |
+
+**Key concept**: Polars prefers explicit operations over implicit indexing. Use `.alias()` to name computed columns.
+
+---
+
+## File I/O
+
+| Format | Read | Write | Notes |
+|--------|------|-------|-------|
+| **CSV** | `read_csv()` / `scan_csv()` | `write_csv()` | Human readable |
+| **Parquet** | `read_parquet()` / `scan_parquet()` | `write_parquet()` | Fast, compressed |
+| **JSON** | `read_json()` / `scan_ndjson()` | `write_json()` | Newline-delimited |
+| **IPC/Arrow** | `read_ipc()` / `scan_ipc()` | `write_ipc()` | Zero-copy |
+
+**Key concept**: Use Parquet for performance. Use `scan_*` for large files to enable lazy optimization.
+
+---
 
 ## Performance Tips
 
-1. **Use lazy mode** for large datasets
-2. **Use Parquet** instead of CSV
-3. **Select columns early** (projection pushdown)
-4. **Filter early** (predicate pushdown)
-5. **Avoid Python UDFs** when possible
+| Tip | Why |
+|-----|-----|
+| Use lazy mode | Query optimization |
+| Use Parquet | Column-oriented, compressed |
+| Select columns early | Projection pushdown |
+| Filter early | Predicate pushdown |
+| Avoid Python UDFs | Breaks parallelism |
+| Use expressions | Vectorized operations |
+| Set dtypes on read | Avoid inference overhead |
+
+---
 
 ## vs Alternatives
 
-| Tool | Best For |
-|------|----------|
-| **Polars** | 1-100GB in RAM, speed critical |
-| Pandas | Small data, ecosystem compatibility |
-| Dask | Larger than RAM, distributed |
-| Spark | Cluster computing, very large scale |
+| Tool | Best For | Limitations |
+|------|----------|-------------|
+| **Polars** | 1-100GB, speed critical | Must fit in RAM |
+| **Pandas** | Small data, ecosystem | Slow, memory hungry |
+| **Dask** | Larger than RAM | More complex API |
+| **Spark** | Cluster computing | Infrastructure overhead |
+| **DuckDB** | SQL interface | Different API style |
 
 ## Resources
 
 - Docs: <https://pola.rs/>
-- GitHub: <https://github.com/pola-rs/polars>
 - User Guide: <https://docs.pola.rs/user-guide/>
+- Cookbook: <https://docs.pola.rs/user-guide/misc/cookbook/>
