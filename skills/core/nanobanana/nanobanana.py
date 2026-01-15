@@ -13,9 +13,9 @@ from io import BytesIO
 load_dotenv(os.path.expanduser("~") + "/.nanobanana.env")
 
 # Google API configuration from environment variables
-api_key = os.getenv("GEMINI_API_KEY") or ""
+api_key = os.getenv("GEMINI_API_KEY")
 
-if not api_key:
+if api_key is None:
     raise ValueError(
         "Missing GEMINI_API_KEY environment variable. Please check your .env file."
     )
